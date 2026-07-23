@@ -281,18 +281,20 @@
     'assets/reactions/reaction12.png'
   ];
   const reactionSlots=[...document.querySelectorAll('#reaction-stack img')];
-  let reactionStep=0;
   if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
-    setInterval(()=>{
-      reactionStep=(reactionStep+1)%reactionImages.length;
-      reactionSlots.forEach((img,index)=>{
+    reactionSlots.forEach((img,index)=>{
+      let imageIndex=index*3;
+      const changeReaction=()=>{
+        imageIndex=(imageIndex+1+Math.floor(Math.random()*(reactionImages.length-1)))%reactionImages.length;
         img.classList.add('is-changing');
         setTimeout(()=>{
-          img.src=reactionImages[(reactionStep+(index*3))%reactionImages.length];
+          img.src=reactionImages[imageIndex];
           img.classList.remove('is-changing');
-        },350);
-      });
-    },3000);
+          setTimeout(changeReaction,700+Math.random()*600);
+        },180);
+      };
+      setTimeout(changeReaction,300+(index*230)+Math.random()*350);
+    });
   }
 </script>
 </body>
