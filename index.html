@@ -48,9 +48,9 @@
     .experience-section{position:relative;overflow:hidden;padding-top:112px}
     .experience-copy{position:relative;z-index:2}
     .eyes-strip{position:absolute;left:-30px;top:-25px;width:min(560px,72vw);opacity:.32;z-index:-1;pointer-events:none}
-    .mosaic{display:grid;grid-template-columns:1.2fr .8fr;gap:10px}
-    .mosaic img{width:100%;height:280px;object-fit:cover;border-radius:8px}
-    .mosaic img:first-child{grid-row:span 2;height:570px}
+    .mosaic{display:flex;flex-direction:column;gap:10px;width:100%;max-width:500px;margin-left:auto}
+    .mosaic img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:8px;transition:opacity .35s ease}
+    .mosaic img.is-changing{opacity:0}
     .bigline{font:900 clamp(2.6rem,6vw,5.8rem)/.95 Georgia,serif;margin:0}
     .chips{display:flex;flex-wrap:wrap;gap:10px;margin:24px 0}
     .chip{padding:10px 14px;border:1px solid rgba(228,180,90,.45);border-radius:999px;font-weight:800}
@@ -88,8 +88,8 @@
       .secondary-death-card:not(:first-child){display:none}
       .experience-section{padding-top:92px;margin-top:0}
       .split,.location{grid-template-columns:1fr}
-      .mosaic img,.mosaic img:first-child{height:300px}
-      .mosaic img:first-child{grid-row:auto;grid-column:1/-1}
+      .mosaic{max-width:none;margin:0}
+      .mosaic img{height:auto}
       .reviews,.facts{grid-template-columns:1fr}
       .death-card{width:92px}
       .gallery img{height:360px}
@@ -146,10 +146,10 @@
         <div class="chips"><span class="chip">Secrets</span><span class="chip">Alliances</span><span class="chip">Accusations</span><span class="chip">Games</span><span class="chip">A dramatic finale</span></div>
         <a class="button" href="bookings.html">WHO ARE YOU BRINGING?</a>
       </div>
-      <div class="mosaic">
-        <img src="assets/event-photos/event12.png" alt="Contestants reacting">
-        <img src="assets/event-photos/event27.png" alt="House of Deceit game">
-        <img src="assets/event-photos/event31.png" alt="Friends taking part">
+      <div class="mosaic" id="reaction-stack">
+        <img src="assets/reactions/reaction2.png" alt="Guests reacting during House of Deceit">
+        <img src="assets/reactions/reaction4.png" alt="Guests reacting during House of Deceit">
+        <img src="assets/reactions/reaction7.png" alt="Guests reacting during House of Deceit">
       </div>
     </div>
   </section>
@@ -267,6 +267,33 @@
   const v=document.getElementById('hero-video');
   const b=document.getElementById('sound-button');
   b.addEventListener('click',()=>{v.muted=false;v.currentTime=0;v.play();b.hidden=true});
+
+  const reactionImages=[
+    'assets/reactions/reaction2.png',
+    'assets/reactions/reaction3.png',
+    'assets/reactions/reaction4.png',
+    'assets/reactions/reaction6.png',
+    'assets/reactions/reaction7.png',
+    'assets/reactions/reaction8.png',
+    'assets/reactions/reaction9.png',
+    'assets/reactions/reaction10.png',
+    'assets/reactions/reaction11.png',
+    'assets/reactions/reaction12.png'
+  ];
+  const reactionSlots=[...document.querySelectorAll('#reaction-stack img')];
+  let reactionStep=0;
+  if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    setInterval(()=>{
+      reactionStep=(reactionStep+1)%reactionImages.length;
+      reactionSlots.forEach((img,index)=>{
+        img.classList.add('is-changing');
+        setTimeout(()=>{
+          img.src=reactionImages[(reactionStep+(index*3))%reactionImages.length];
+          img.classList.remove('is-changing');
+        },350);
+      });
+    },3000);
+  }
 </script>
 </body>
 </html>
