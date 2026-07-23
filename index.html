@@ -34,7 +34,11 @@
     .sound-button{position:absolute;left:18px;top:18px;right:auto;bottom:auto;z-index:4;border:1px solid #fff;border-radius:999px;padding:10px 16px;background:rgba(0,0,0,.68);color:#fff;font-weight:800;cursor:pointer}
     .death-card{position:absolute;width:min(180px,25vw);z-index:5;filter:drop-shadow(0 14px 20px rgba(0,0,0,.4))}
     .hero-card{right:max(80px,calc((100vw - var(--max))/2 + 80px));top:18%;transform:rotate(7deg)}
-    .secondary-death-card{position:absolute;width:120px;left:52%;bottom:-88px;z-index:6;transform:rotate(-6deg);filter:drop-shadow(0 12px 18px rgba(0,0,0,.45))}
+    .death-card-row{position:absolute;left:52%;bottom:-88px;z-index:6;display:flex;align-items:flex-start;gap:24px;pointer-events:none}
+    .secondary-death-card{width:120px;filter:drop-shadow(0 12px 18px rgba(0,0,0,.45))}
+    .secondary-death-card:nth-child(1){transform:rotate(-6deg)}
+    .secondary-death-card:nth-child(2){transform:rotate(4deg)}
+    .secondary-death-card:nth-child(3){transform:rotate(-3deg)}
     section{padding:72px 0}
     .purple{background:var(--purple)}
     .eyebrow{color:var(--gold);font-size:.8rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase}
@@ -79,7 +83,9 @@
       .hero-copy h1{max-width:92%}
       .hero-card{width:92px;top:calc((100vw * 9 / 16) - 46px);right:14px}
       .sound-button{left:16px;top:16px}
-      .secondary-death-card{width:100px;left:24px;bottom:-58px;transform:rotate(-6deg)}
+      .death-card-row{left:24px;top:100%;bottom:auto;gap:0}
+      .secondary-death-card{width:100px}
+      .secondary-death-card:not(:first-child){display:none}
       .experience-section{padding-top:92px;margin-top:0}
       .split,.location{grid-template-columns:1fr}
       .mosaic img,.mosaic img:first-child{height:300px}
@@ -121,7 +127,11 @@
         <p>One house. Two nights. A group of friends. Memories you will talk about forever.</p>
         <p><span class="price">£166 per person</span><span>Whitstable, 1hr from London. Groups of 10–15</span></p>
         <a class="button" href="bookings.html">SEE AVAILABLE WEEKENDS</a>
-        <img class="secondary-death-card" src="assets/death-who-cutouts/deathwho6.png" alt="Death Who character">
+        <div class="death-card-row" aria-label="Death Who characters">
+          <img class="secondary-death-card" src="assets/death-who-cutouts/deathwho6.png" alt="Death Who character">
+          <img class="secondary-death-card" src="assets/death-who-cutouts/deathwho2.png" alt="Death Who character">
+          <img class="secondary-death-card" src="assets/death-who-cutouts/deathwho3.png" alt="Death Who character">
+        </div>
       </div>
     </div>
   </section>
