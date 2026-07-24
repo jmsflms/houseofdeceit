@@ -30,7 +30,11 @@
     .hero-copy .wrap{position:relative}
     .hero-copy h1{font:900 clamp(2.7rem,7vw,6.5rem)/.92 Georgia,serif;max-width:900px;margin:0 0 14px}
     .hero-copy p{font-size:clamp(1.05rem,2.3vw,1.5rem);max-width:760px;margin:0 0 18px}
-    .price{display:inline-block;background:var(--cream);color:#211524;padding:8px 12px;font-weight:900;margin-right:8px}
+    .price{background:var(--cream);color:#211524}
+    .hero-buttons{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;width:100%;max-width:1080px;margin-top:20px}
+    .hero-detail,.hero-buttons .button{min-width:0;min-height:56px;padding:10px 12px;border-radius:5px;font-size:1rem;font-weight:900;line-height:1.15;text-align:center;display:flex;align-items:center;justify-content:center}
+    .hero-detail{background:var(--cream);color:#211524}
+    .hero-buttons .button{width:100%}
     .sound-button{position:absolute;left:max(18px,calc((100vw - var(--max))/2));top:18px;right:auto;bottom:auto;z-index:4;border:1px solid #fff;border-radius:999px;padding:10px 16px;background:rgba(0,0,0,.68);color:#fff;font-weight:800;cursor:pointer}
     .death-card{position:absolute;width:min(180px,25vw);z-index:5;filter:drop-shadow(0 14px 20px rgba(0,0,0,.4))}
     .hero-card{right:max(80px,calc((100vw - var(--max))/2 + 80px));top:18%;transform:rotate(7deg)}
@@ -115,6 +119,8 @@
       .video{aspect-ratio:16/9}
       .hero-copy{position:relative;padding:34px 0 28px;background:var(--black)}
       .hero-copy h1{max-width:92%}
+      .hero-buttons{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+      .hero-detail,.hero-buttons .button{min-height:54px;font-size:.92rem;padding:9px 7px}
       .hero-card{width:92px;top:calc((100vw * 9 / 16) - 46px);right:14px}
       .sound-button{left:16px;top:16px}
       .death-card-row{left:24px;top:100%;bottom:auto;gap:6px}
@@ -159,8 +165,13 @@
         <p class="eyebrow">House of Deceit</p>
         <h1>The most intense social experience ever invented</h1>
         <p>One house. Two nights. A group of friends. Memories you will talk about forever.</p>
-        <p><span class="price">£166 per person</span><span>Whitstable, 1hr from London. Groups of 10–15</span></p>
-        <a class="button" href="bookings.html">SEE AVAILABLE WEEKENDS</a>
+        <div class="hero-buttons">
+          <span class="hero-detail price">£166 per person</span>
+          <span class="hero-detail">Whitstable</span>
+          <span class="hero-detail">1hr from London</span>
+          <span class="hero-detail">Groups of 10–15</span>
+          <a class="button" href="bookings.html">SEE AVAILABLE WEEKENDS</a>
+        </div>
         <div class="death-card-row" aria-label="Death Who characters">
           <img class="secondary-death-card" src="assets/death-who-cutouts/deathwho6.png" alt="Death Who character">
           <img class="secondary-death-card" src="assets/death-who-cutouts/deathwho2.png" alt="Death Who character">
