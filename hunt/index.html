@@ -1,0 +1,1121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>House of Deceit — Treasure Hunt</title>
+  <link rel="icon" type="image/png" href="../assets/logos/eyes-icon.png">
+  <style>
+    :root{
+      --red:#120817;
+      --blue:#24102f;
+      --purple:#6f2b8f;
+      --purpleBright:#a95bd0;
+      --purpleGlow:rgba(169,91,208,.28);
+
+      --text:#ffffff;
+      --muted:rgba(255,255,255,.76);
+
+      --shadow: 0 18px 50px rgba(0,0,0,.30);
+      --shadow2: 0 10px 22px rgba(0,0,0,.22);
+
+      --panel: rgba(0,0,0,.20);
+      --panelBorder: rgba(255,255,255,.18);
+
+      --wedgeA: rgba(255,255,255,.08);
+      --wedgeB: rgba(255,255,255,.14);
+      --wedgeActive: rgba(255,255,255,.26);
+
+      --sep: rgba(255,255,255,.34);
+      --rim: rgba(255,255,255,.22);
+
+      --btnBg: rgba(255,255,255,.12);
+      --btnBgHover: rgba(255,255,255,.18);
+      --btnBorder: rgba(255,255,255,.18);
+      --btnBorderStrong: rgba(255,255,255,.30);
+
+      --focus: rgba(255,255,255,.32);
+    }
+
+    *{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+    html,body{ height:100%; margin:0; font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji"; color:var(--text); }
+    body{
+      background:
+        radial-gradient(circle at 50% -10%, rgba(122,55,154,.34), transparent 38%),
+        radial-gradient(circle at 50% 110%, rgba(73,24,96,.30), transparent 42%),
+        var(--red);
+      transition: background 220ms ease;
+      overflow:hidden;
+      touch-action: manipulation;
+      display:flex;
+      justify-content:center;
+    }
+    body.state-blue{
+      background:
+        radial-gradient(circle at 50% -10%, rgba(169,91,208,.30), transparent 38%),
+        radial-gradient(circle at 50% 110%, rgba(92,31,120,.34), transparent 42%),
+        var(--blue);
+    }
+
+    .app{
+      width: min(860px, 100%);
+      height: 100%;
+      padding: clamp(12px, 2.2vh, 22px);
+      padding-top: max(clamp(12px, 2.2vh, 22px), env(safe-area-inset-top));
+      padding-bottom: max(clamp(12px, 2.2vh, 22px), env(safe-area-inset-bottom));
+      display:flex;
+      flex-direction: column;
+      gap: clamp(8px, 1.35vh, 14px);
+    }
+
+    .brand{
+      width:100%;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      min-height: clamp(38px, 6.5vh, 62px);
+      flex: 0 0 auto;
+    }
+    .brand img{
+      display:block;
+      width:min(92%, 620px);
+      max-height: clamp(38px, 6.5vh, 62px);
+      height:auto;
+      object-fit:contain;
+      filter: drop-shadow(0 10px 24px rgba(0,0,0,.42));
+    }
+
+    .topbar{
+      display:flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items:center;
+      text-align:center;
+    }
+
+    .row{
+      width:100%;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .pill{
+      flex:1;
+      min-height: 50px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.045));
+      border: 1px solid var(--panelBorder);
+      box-shadow: var(--shadow2);
+      padding: 10px 14px;
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+    }
+
+    .pill .label{
+      font-size: 12px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 900;
+    }
+    .pill .value{
+      font-variant-numeric: tabular-nums;
+      font-size: 24px;
+      font-weight: 1000;
+      letter-spacing: .04em;
+    }
+
+    .codePill{
+      flex: 0 0 auto;
+      min-width: 150px;
+      justify-content:center;
+      gap: 10px;
+    }
+    .codePill .value{ font-size: 18px; }
+
+    .instruction{
+      width:100%;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(38,13,48,.82), rgba(13,6,18,.76));
+      border: 1px solid rgba(194,125,224,.24);
+      box-shadow: var(--shadow);
+      padding: 14px 16px;
+      font-weight: 1000;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      font-size: clamp(14px, 2.0vh, 18px);
+    }
+
+    .arrowWrap{
+      width: 100%;
+      display:flex;
+      justify-content:center;
+      user-select:none;
+      pointer-events:none;
+      filter: drop-shadow(0 12px 18px rgba(0,0,0,.22));
+      margin-top: -2px;
+      margin-bottom: -2px;
+    }
+    .arrowSvg{
+      width: min(520px, 94%);
+      height: 52px;
+      opacity: .96;
+      transition: opacity 120ms linear;
+    }
+    .arrowPulse{
+      opacity: .45;
+    }
+    .arrowLine{
+      stroke: rgba(255,255,255,.92);
+      stroke-width: 10;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .middle{
+      flex: 1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 2px 0;
+    }
+
+    .dial{
+      width: min(640px, 92vw);
+      aspect-ratio: 1/1;
+      position: relative;
+      border-radius: 999px;
+      box-shadow: var(--shadow);
+      background:
+        radial-gradient(circle at 50% 40%, rgba(255,255,255,.16), rgba(255,255,255,0) 58%),
+        radial-gradient(circle at 50% 85%, rgba(0,0,0,.20), rgba(0,0,0,0) 60%),
+        rgba(8,4,11,.72);
+      border: 1px solid rgba(194,125,224,.22);
+      overflow:hidden;
+      touch-action: none;
+      user-select:none;
+      cursor: grab;
+    }
+    .dial.dragging{ cursor: grabbing; }
+
+    #fixedSvg{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      display:block;
+    }
+
+    .rotorLayer{
+      position:absolute;
+      inset:0;
+      z-index: 9;
+      pointer-events:none;
+    }
+    .rotor{
+      position:absolute;
+      inset:0;
+      transform-origin: 50% 50%;
+      will-change: transform;
+    }
+
+    .bezel{
+      position:absolute;
+      inset: 2.8%;
+      border-radius: 999px;
+      border: 3px solid rgba(255,255,255,.18);
+      box-shadow:
+        inset 0 0 0 10px rgba(255,255,255,.04),
+        inset 0 0 0 22px rgba(0,0,0,.06);
+      background:
+        radial-gradient(circle at 50% 30%, rgba(255,255,255,.16), rgba(255,255,255,0) 58%),
+        rgba(0,0,0,.06);
+    }
+
+    .marker{
+      position:absolute;
+      left: 50%;
+      top: 3.2%;
+      transform: translate(-50%, 0) rotate(90deg);
+      transform-origin: 50% 50%;
+      width: 76px;
+      height: 34px;
+      filter: drop-shadow(0 14px 18px rgba(0,0,0,.28));
+    }
+    .marker svg{ width:100%; height:100%; display:block; }
+    .marker .mFill{ fill: rgba(255,255,255,.96); }
+    .marker .mCut{ fill: rgba(0,0,0,.16); opacity:.22; }
+
+    .center{
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform: translate(-50%, -50%);
+      width: 56%;
+      height: 56%;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 50% 25%, rgba(125,53,153,.20), transparent 58%),
+        linear-gradient(180deg, rgba(10,5,14,.96), rgba(20,8,27,.94));
+      border: 1px solid rgba(194,125,224,.24);
+      box-shadow: 0 18px 45px rgba(0,0,0,.28);
+      z-index: 7;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 18px;
+      text-align:center;
+      pointer-events:none;
+    }
+    .qNum{
+      font-size: 12px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.78);
+      font-weight: 950;
+      margin-bottom: 10px;
+    }
+    .qText{
+      font-size: clamp(14px, 2.2vh, 20px);
+      font-weight: 1000;
+      line-height: 1.15;
+      letter-spacing: .01em;
+    }
+
+    .ansText{
+      fill: rgba(255,255,255,.97);
+      text-anchor: middle;
+      dominant-baseline: middle;
+      font-weight: 1000;
+      font-size: 34px;
+      letter-spacing: .01em;
+      paint-order: stroke;
+      stroke: rgba(0,0,0,.40);
+      stroke-width: 6px;
+    }
+
+    .wedge{
+      stroke: rgba(255,255,255,.18);
+      stroke-width: 2;
+      vector-effect: non-scaling-stroke;
+    }
+    .wedge.a{ fill: var(--wedgeA); }
+    .wedge.b{ fill: var(--wedgeB); }
+    .wedge.active{ fill: var(--wedgeActive); stroke: rgba(255,255,255,.30); stroke-width: 3; }
+
+    .snapFlash{
+      animation: snapFlash 120ms ease;
+    }
+    @keyframes snapFlash{
+      0% { filter: brightness(1); }
+      40% { filter: brightness(1.10); }
+      100% { filter: brightness(1); }
+    }
+
+    .bottom{
+      display:flex;
+      gap: 12px;
+      align-items:center;
+      justify-content:center;
+      padding-top: 2px;
+    }
+    .btn{
+      flex:1;
+      max-width: 420px;
+      border-radius: 18px;
+      padding: 16px 16px;
+      border: 1px solid var(--btnBorder);
+      background: var(--btnBg);
+      color: var(--text);
+      font-weight: 1000;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-size: 16px;
+      box-shadow: var(--shadow2);
+      cursor: pointer;
+      user-select:none;
+      touch-action: manipulation;
+      transition: transform 120ms ease, background-color 120ms ease, border-color 120ms ease;
+    }
+    .btn:active{ transform: translateY(1px) scale(0.99); }
+    .btn:hover{ background: var(--btnBgHover); border-color: var(--btnBorderStrong); }
+    .btn:focus-visible{
+      outline: none;
+      box-shadow: var(--shadow2), 0 0 0 4px var(--focus);
+    }
+    .btn.lock{
+      background: linear-gradient(180deg, rgba(132,53,166,.46), rgba(78,25,100,.52));
+      border-color: rgba(211,146,239,.38);
+    }
+
+    .soundBadge{
+      position: fixed;
+      right: 12px;
+      bottom: 12px;
+      z-index: 1200;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(0,0,0,.55);
+      border: 1px solid rgba(255,255,255,.22);
+      box-shadow: 0 12px 30px rgba(0,0,0,.35);
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: .10em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.92);
+      user-select:none;
+    }
+    .soundBadge.hidden{ display:none; }
+
+    .modal{
+      position: fixed;
+      inset: 0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: 22px;
+      z-index: 999;
+      background: rgba(0,0,0,.62);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+    .modal.show{ display:flex; }
+    .modalCard{
+      width: min(560px, 92vw);
+      border-radius: 26px;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(169,91,208,.24), transparent 45%),
+        linear-gradient(180deg, rgba(32,12,42,.98), rgba(10,5,14,.98));
+      border: 1px solid rgba(211,146,239,.28);
+      box-shadow: 0 30px 80px rgba(0,0,0,.40);
+      padding: 22px 18px;
+      text-align:center;
+    }
+    .modalCard h1{
+      margin: 6px 0 10px;
+      font-size: clamp(26px, 4.0vh, 40px);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      font-weight: 1100;
+    }
+    .modalCard .time{
+      margin: 0 0 14px;
+      color: rgba(255,255,255,.92);
+      font-weight: 1000;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-variant-numeric: tabular-nums;
+    }
+    .modalCard .codeReveal{
+      margin: 0 0 12px;
+      font-size: clamp(24px, 4.2vh, 38px);
+      font-weight: 1100;
+      letter-spacing: .10em;
+      text-transform: uppercase;
+    }
+    .modalCard .hint{
+      font-size: 12px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.74);
+      margin-top: 4px;
+    }
+
+    @media (max-width: 420px){
+      .app{ padding-left:10px; padding-right:10px; }
+      .brand{ min-height: 38px; }
+      .brand img{ width:94%; max-height:42px; }
+      .topbar{ gap:8px; }
+      .instruction{ padding:11px 12px; border-radius:18px; }
+      .ansText{ font-size: 28px; stroke-width: 6px; }
+      .marker{ width: 66px; height: 30px; }
+      .pill .value{ font-size: 22px; }
+      .btn{ font-size: 15px; padding: 15px 14px; }
+      .arrowSvg{ height: 46px; }
+    }
+  </style>
+</head>
+<body class="state-red">
+  <div class="app">
+    <div class="brand">
+      <img src="../assets/logos/logo.png" alt="House of Deceit" />
+    </div>
+
+    <div class="topbar">
+      <div class="row">
+        <div class="pill" aria-label="Timer">
+          <div class="label">TIMER</div>
+          <div class="value" id="timer">00:00</div>
+        </div>
+        <div class="pill codePill" aria-label="Progress">
+          <div class="label">CODE</div>
+          <div class="value" id="code">0 / 6</div>
+        </div>
+      </div>
+
+      <div class="instruction" id="instruction">Move Dial in Direction of Arrow</div>
+
+      <div class="arrowWrap" aria-hidden="true">
+        <svg class="arrowSvg" viewBox="0 0 520 52" role="img" aria-label="Direction arrow">
+          <path class="arrowLine" id="arrowPath" d="M 60 36 Q 260 10 460 36" />
+          <path class="arrowLine" id="arrowHead" d="M 440 22 L 462 36 L 438 42" />
+        </svg>
+      </div>
+    </div>
+
+    <div class="middle">
+      <div class="dial" id="dial" aria-label="Safe dial">
+        <svg id="fixedSvg" viewBox="0 0 1000 1000" aria-hidden="true"></svg>
+
+        <div class="rotorLayer" aria-hidden="true">
+          <div class="rotor" id="rotor">
+            <div class="bezel"></div>
+            <div class="marker" id="marker">
+              <svg viewBox="0 0 76 34">
+                <path class="mFill" d="M6 6h42c3 0 6 3 6 6v10c0 3-3 6-6 6H6c-3 0-6-3-6-6V12c0-3 3-6 6-6Z"/>
+                <path class="mFill" d="M54 5 76 17 54 29c-2 1-4-1-4-3V8c0-2 2-4 4-3Z"/>
+                <path class="mCut" d="M8 10h32c2 0 4 2 4 4v6c0 2-2 4-4 4H8c-2 0-4-2-4-4v-6c0-2 2-4 4-4Z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="center" aria-hidden="true">
+          <div>
+            <div class="qNum" id="qNum">Q1</div>
+            <div class="qText" id="qText">…</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom">
+      <button class="btn lock" id="lockBtn">LOCK ANSWER</button>
+      <button class="btn" id="resetBtn">START AGAIN</button>
+    </div>
+  </div>
+
+  <div class="soundBadge" id="soundBadge">TAP TO ENABLE SOUND</div>
+
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Code: 3598">
+    <div class="modalCard">
+      <h1>THE SAFE IS OPEN</h1>
+      <div class="codeReveal">CODE: 3598</div>
+      <div class="time" id="unlockTime">TIME: 00:00</div>
+      <div class="hint">Press START AGAIN to play again.</div>
+    </div>
+  </div>
+
+<script>
+const CANONICAL_QUESTIONS = [
+  {
+    prompt: "Cheeseboard for two at Ales & Blooms?",
+    correct: "£28",
+    answers: ["£28","£10","£12","£26","£27","£29","£30","£32","£35","Not Listed"]
+  },
+  {
+    prompt: "What vegan beer is served at Tankerton Arms?",
+    correct: "I Would Brew 500 Miles",
+    answers: ["I Would Brew 500 Miles","Whispering Grass","Hayloft","Iron Pier","Bloodthirsty Carrot","En Garde","No Vegan Beer","Missoula","Bexley"]
+  },
+  {
+    prompt: "What colour are the strings on the crocheted red-handled tennis rackets on the courts?",
+    correct: "Orange",
+    answers: ["Orange","Red","Yellow","Green","Blue","White","Black","Pink","Purple"]
+  },
+  {
+    prompt: "On the sign near the lifeguard hut, what year did Tankerton win the High St Rising Star award?",
+    correct: "2019",
+    answers: ["2019","1886","1974","1985","2015","2016","2020","2022","2025"]
+  },
+  {
+    prompt: "Pickled egg at Carousel Fish Bar?",
+    correct: "70p",
+    answers: ["70p","50p","60p","65p","75p","80p","90p","£1.00","£1.20","Not Listed"]
+  },
+  {
+    prompt: "Four Loko Tropical at Tesco?",
+    correct: "£4.30",
+    answers: ["£4.30","£3.80","£3.99","£4.00","£4.20","£4.50","£4.75","£4.99","£5.30","Not Sold"]
+  },
+  {
+    prompt: "What shape is on the steak pie at Surmans?",
+    correct: "Star",
+    answers: ["Star","Cow","Letter S","The word PIE","No shape","A weird blob","Heart","Flower"]
+  },
+    {
+    prompt: "I rode on the funfair teacups with video evidence.",
+    correct: "Yes",
+    answers: ["Yes","No"]
+  },
+  {
+    prompt: "I danced in the front row of the funfair band and have video evidence.",
+    correct: "Yes",
+    answers: ["Yes","No"]
+  },
+  {
+    prompt: "Pole Expert: I showed a non-poler how to do a Fireman Spin. Non Pole Expert: I did a Fireman Spin. Video Evidence.",
+    correct: "Yes",
+    answers: ["Yes","No"]
+  }
+];
+
+(() => {
+  const SEGMENTS = 10;
+  const STEP_DEG = 360 / SEGMENTS;
+  const CENTER_OFFSET_DEG = STEP_DEG / 2;
+
+  const dial = document.getElementById("dial");
+  const fixedSvg = document.getElementById("fixedSvg");
+  const rotor = document.getElementById("rotor");
+  const marker = document.getElementById("marker");
+  const timerEl = document.getElementById("timer");
+  const codeEl = document.getElementById("code");
+  const instructionEl = document.getElementById("instruction");
+  const qNumEl = document.getElementById("qNum");
+  const qTextEl = document.getElementById("qText");
+  const lockBtn = document.getElementById("lockBtn");
+  const resetBtn = document.getElementById("resetBtn");
+  const modal = document.getElementById("modal");
+  const unlockTimeEl = document.getElementById("unlockTime");
+  const soundBadge = document.getElementById("soundBadge");
+
+  const arrowPath = document.getElementById("arrowPath");
+  const arrowHead = document.getElementById("arrowHead");
+  const arrowSvg = document.querySelector(".arrowSvg");
+
+  const wedgeEls = [];
+  let textEls = [];
+
+  let state = "RED";
+  let questionIndex = 0;
+  let progress = 0;
+  let unlocked = false;
+  let pointerIndex = 0;
+  let runSeed = Date.now() >>> 0;
+  let DISPLAY = [];
+
+  let dragging = false;
+  let lastAngleDeg = null;
+  let pendingDelta = 0;
+  let rafActive = false;
+
+  let elapsedSec = 0;
+  let timerInterval = null;
+
+  let audioCtx = null;
+  let audioEnabled = false;
+
+  function normalizeDeg(d){ d%=360; if(d<0) d+=360; return d; }
+
+  function angleFromPoint(clientX, clientY){
+    const r = dial.getBoundingClientRect();
+    const cx = r.left + r.width/2;
+    const cy = r.top + r.height/2;
+    const dx = clientX - cx;
+    const dy = clientY - cy;
+    const rad = Math.atan2(dy, dx);
+    return normalizeDeg(rad * 180 / Math.PI + 90);
+  }
+
+  function signedAngleDelta(prevDeg, currDeg){
+    return (currDeg - prevDeg + 540) % 360 - 180;
+  }
+
+  function filterDeltaByDirection(delta){
+    if (state === "RED") return delta > 0 ? delta : 0;
+    return delta < 0 ? delta : 0;
+  }
+
+  function stepByDetents(deltaDeg){
+    const steps = (deltaDeg / STEP_DEG) | 0;
+    if (steps === 0) return deltaDeg;
+
+    pointerIndex = (pointerIndex + steps) % SEGMENTS;
+    if (pointerIndex < 0) pointerIndex += SEGMENTS;
+
+    onDetent();
+    renderRotor();
+    return deltaDeg - steps * STEP_DEG;
+  }
+
+  function onDetent(){
+    if (navigator.vibrate) navigator.vibrate(10);
+    dial.classList.remove("snapFlash");
+    void dial.offsetWidth;
+    dial.classList.add("snapFlash");
+    playDetentClick();
+  }
+
+  function renderRotor(){
+    const angle = CENTER_OFFSET_DEG + pointerIndex * STEP_DEG;
+    rotor.style.transform = `rotate(${angle}deg)`;
+
+    for (let i=0;i<wedgeEls.length;i++){
+      wedgeEls[i].classList.toggle("active", i === pointerIndex);
+    }
+  }
+
+  function setMarkerDirection(){
+    marker.style.transform = `translate(-50%, 0) rotate(${state === "RED" ? 90 : -90}deg)`;
+  }
+
+  function flipState(){
+    state = (state === "RED") ? "BLUE" : "RED";
+    document.body.classList.toggle("state-blue", state === "BLUE");
+    instructionEl.textContent = (state === "RED") ? "Move Dial in Direction of Arrow" : "Move Dial in Direction of Arrow";
+    renderDirectionArrow();
+    setMarkerDirection();
+  }
+
+  function handleLock(){
+    if (unlocked) return;
+    ensureAudioRunning();
+    if (navigator.vibrate) navigator.vibrate([60, 40, 110]);
+    playLockSound();
+
+    flipState();
+
+    const q = DISPLAY[questionIndex];
+    const isCorrect = (pointerIndex === q.correctIndex);
+
+    if (isCorrect){
+      progress += 1;
+      if (progress >= DISPLAY.length){
+        progress = DISPLAY.length;
+        unlocked = true;
+        showUnlocked();
+      } else {
+        questionIndex = Math.min(questionIndex + 1, DISPLAY.length - 1);
+      }
+    } else {
+      progress = 0;
+      questionIndex = 0;
+    }
+
+    if (!unlocked) pointerIndex = 0;
+
+    updateUI();
+  }
+
+  function showUnlocked(){
+    unlockTimeEl.textContent = `TIME: ${formatTime(elapsedSec)}`;
+    modal.classList.add("show");
+    lockBtn.disabled = true;
+    lockBtn.style.opacity = 0.6;
+  }
+
+  function hideUnlocked(){
+    modal.classList.remove("show");
+  }
+
+  function resetAll(){
+    unlocked = false;
+    hideUnlocked();
+
+    state = "RED";
+    questionIndex = 0;
+    progress = 0;
+    pointerIndex = 0;
+
+    runSeed = (Date.now() ^ (Math.random()*0xFFFFFFFF)) >>> 0;
+    buildDisplayData();
+
+    elapsedSec = 0;
+    updateTimerUI();
+
+    document.body.classList.remove("state-blue");
+    lockBtn.disabled = false;
+    lockBtn.style.opacity = 1;
+
+    updateUI();
+  }
+
+  function buildDisplayData(){
+    DISPLAY = CANONICAL_QUESTIONS.map((q, qi) => {
+      const rng = seededRng((runSeed + qi*2654435761) >>> 0);
+
+      const arr = q.answers.slice();
+      shuffleInPlace(arr, rng);
+
+      let correctIndex = arr.indexOf(q.correct);
+      let guard = 0;
+      while (correctIndex === 0 && guard < 6){
+        shuffleInPlace(arr, rng);
+        correctIndex = arr.indexOf(q.correct);
+        guard++;
+      }
+      if (correctIndex === 0){
+        [arr[0], arr[1]] = [arr[1], arr[0]];
+        correctIndex = arr.indexOf(q.correct);
+      }
+
+      return { prompt: q.prompt, displayAnswers: arr, correctIndex };
+    });
+  }
+
+  function seededRng(seed){
+    let t = seed >>> 0;
+    return function(){
+      t += 0x6D2B79F5;
+      let r = Math.imul(t ^ (t >>> 15), 1 | t);
+      r ^= r + Math.imul(r ^ (r >>> 7), 61 | r);
+      return ((r ^ (r >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function shuffleInPlace(a, rnd){
+    for (let i=a.length-1; i>0; i--){
+      const j = Math.floor(rnd() * (i+1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+  }
+
+  function buildFixedDialOnce(){
+    fixedSvg.innerHTML = "";
+    wedgeEls.length = 0;
+
+    const cx = 500, cy = 500;
+    const rOuter = 485;
+    const rInner = 305;
+
+    fixedSvg.appendChild(svgEl("circle", {
+      cx, cy, r: rOuter - 6,
+      fill: "none",
+      stroke: "rgba(255,255,255,.22)",
+      "stroke-width": 12,
+      opacity: 0.65
+    }));
+
+    fixedSvg.appendChild(svgEl("circle", {
+      cx, cy, r: rInner + 6,
+      fill: "none",
+      stroke: "rgba(255,255,255,.20)",
+      "stroke-width": 12,
+      opacity: 0.60
+    }));
+
+    for (let i=0;i<SEGMENTS;i++){
+      const startDeg = i * STEP_DEG;
+      const endDeg = (i+1) * STEP_DEG;
+
+      const wedge = svgEl("path", {
+        d: donutWedgePath(cx, cy, rInner, rOuter, startDeg, endDeg),
+        class: `wedge ${i%2===0 ? "a" : "b"}`
+      });
+      fixedSvg.appendChild(wedge);
+      wedgeEls.push(wedge);
+
+      const midDeg = startDeg + CENTER_OFFSET_DEG;
+      const labelR = (rInner + rOuter)/2 + 18;
+      const pos = polarToXY(cx, cy, labelR, midDeg);
+
+      const t = svgEl("text", {
+        x: pos.x.toFixed(2),
+        y: pos.y.toFixed(2),
+        class: "ansText",
+        "data-i": String(i)
+      });
+      fixedSvg.appendChild(t);
+    }
+
+    for (let i=0;i<SEGMENTS;i++){
+      const deg = i * STEP_DEG;
+      const p1 = polarToXY(cx, cy, rInner, deg);
+      const p2 = polarToXY(cx, cy, rOuter, deg);
+      fixedSvg.appendChild(svgEl("line", {
+        x1: p1.x.toFixed(2),
+        y1: p1.y.toFixed(2),
+        x2: p2.x.toFixed(2),
+        y2: p2.y.toFixed(2),
+        stroke: "rgba(255,255,255,.38)",
+        "stroke-width": 4,
+        "stroke-linecap": "round"
+      }));
+    }
+
+    textEls = Array.from(fixedSvg.querySelectorAll("text.ansText"));
+  }
+
+  function setSvgMultilineText(textEl, value){
+    textEl.innerHTML = "";
+    const originalX = textEl.getAttribute("x");
+    const lines = String(value).split("\n");
+
+    if (lines.length === 1){
+      textEl.textContent = value;
+      return;
+    }
+
+    const lineHeight = 34;
+    const startDy = -((lines.length - 1) * lineHeight) / 2;
+
+    lines.forEach((line, index) => {
+      const tspan = svgEl("tspan", {
+        x: originalX,
+        dy: index === 0 ? String(startDy) : String(lineHeight)
+      });
+      tspan.textContent = line;
+      textEl.appendChild(tspan);
+    });
+  }
+
+  function updateAnswersForQuestion(q){
+    for (let i=0;i<textEls.length;i++){
+      setSvgMultilineText(textEls[i], q.displayAnswers[i] ?? "");
+    }
+  }
+
+  function svgEl(tag, attrs){
+    const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    for (const k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
+  }
+
+  function degToRad(deg){ return (deg - 90) * Math.PI/180; }
+
+  function polarToXY(cx, cy, r, deg){
+    const rad = degToRad(deg);
+    return { x: cx + r*Math.cos(rad), y: cy + r*Math.sin(rad) };
+  }
+
+  function donutWedgePath(cx, cy, rInner, rOuter, startDeg, endDeg){
+    const p1 = polarToXY(cx, cy, rOuter, startDeg);
+    const p2 = polarToXY(cx, cy, rOuter, endDeg);
+    const p3 = polarToXY(cx, cy, rInner, endDeg);
+    const p4 = polarToXY(cx, cy, rInner, startDeg);
+    const largeArc = (endDeg - startDeg) > 180 ? 1 : 0;
+    return [
+      `M ${p1.x.toFixed(2)} ${p1.y.toFixed(2)}`,
+      `A ${rOuter} ${rOuter} 0 ${largeArc} 1 ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`,
+      `L ${p3.x.toFixed(2)} ${p3.y.toFixed(2)}`,
+      `A ${rInner} ${rInner} 0 ${largeArc} 0 ${p4.x.toFixed(2)} ${p4.y.toFixed(2)}`,
+      "Z"
+    ].join(" ");
+  }
+
+  function startRafIfNeeded(){
+    if (rafActive) return;
+    rafActive = true;
+
+    const tick = () => {
+      if (!dragging || unlocked){
+        rafActive = false;
+        pendingDelta = 0;
+        return;
+      }
+
+      let d = pendingDelta;
+      pendingDelta = 0;
+      d = stepByDetents(d);
+      pendingDelta += d;
+
+      requestAnimationFrame(tick);
+    };
+
+    requestAnimationFrame(tick);
+  }
+
+  function onDragStart(clientX, clientY){
+    if (unlocked) return;
+    ensureAudioRunning();
+    dragging = true;
+    dial.classList.add("dragging");
+    lastAngleDeg = angleFromPoint(clientX, clientY);
+    pendingDelta = 0;
+    startRafIfNeeded();
+  }
+
+  function onDragMove(clientX, clientY){
+    if (!dragging || unlocked) return;
+
+    const ang = angleFromPoint(clientX, clientY);
+    let d = signedAngleDelta(lastAngleDeg, ang);
+    lastAngleDeg = ang;
+
+    d = filterDeltaByDirection(d);
+    pendingDelta += d;
+  }
+
+  function onDragEnd(){
+    dragging = false;
+    dial.classList.remove("dragging");
+    lastAngleDeg = null;
+  }
+
+  dial.addEventListener("touchstart", (e) => {
+    if (e.touches && e.touches.length){
+      e.preventDefault();
+      onDragStart(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  }, { passive:false });
+
+  dial.addEventListener("touchmove", (e) => {
+    if (e.touches && e.touches.length){
+      e.preventDefault();
+      onDragMove(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  }, { passive:false });
+
+  dial.addEventListener("touchend", (e) => { e.preventDefault(); onDragEnd(); }, { passive:false });
+  dial.addEventListener("touchcancel", (e) => { e.preventDefault(); onDragEnd(); }, { passive:false });
+
+  dial.addEventListener("mousedown", (e) => {
+    e.preventDefault();
+    onDragStart(e.clientX, e.clientY);
+  });
+
+  window.addEventListener("mousemove", (e) => onDragMove(e.clientX, e.clientY));
+  window.addEventListener("mouseup", () => onDragEnd());
+
+  lockBtn.addEventListener("click", () => handleLock());
+  resetBtn.addEventListener("click", () => resetAll());
+
+  function formatTime(sec){
+    const m = Math.floor(sec/60);
+    const s = sec % 60;
+    return `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+  }
+
+  function updateTimerUI(){
+    timerEl.textContent = formatTime(elapsedSec);
+  }
+
+  function startTimer(){
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      elapsedSec += 1;
+      updateTimerUI();
+
+      arrowSvg.classList.add("arrowPulse");
+      setTimeout(() => arrowSvg.classList.remove("arrowPulse"), 130);
+
+      playSecondTick();
+    }, 1000);
+  }
+
+  function renderDirectionArrow(){
+    if (state === "RED"){
+      arrowPath.setAttribute("d", "M 70 38 Q 260 12 450 38");
+      arrowHead.setAttribute("d", "M 422 20 L 454 38 L 418 44");
+    } else {
+      arrowPath.setAttribute("d", "M 450 38 Q 260 12 70 38");
+      arrowHead.setAttribute("d", "M 98 20 L 66 38 L 102 44");
+    }
+  }
+
+  function ensureAudioRunning(){
+    try{
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === "suspended") audioCtx.resume();
+      if (audioCtx.state === "running"){
+        audioEnabled = true;
+        soundBadge.classList.add("hidden");
+      } else {
+        audioEnabled = false;
+        soundBadge.classList.remove("hidden");
+      }
+    } catch (e){
+      audioEnabled = false;
+      soundBadge.classList.remove("hidden");
+    }
+  }
+
+  ["pointerdown","touchstart","click"].forEach(evt => {
+    window.addEventListener(evt, ensureAudioRunning, { passive:true });
+  });
+
+  function playSecondTick(){
+    if (!audioCtx || audioCtx.state !== "running") return;
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(930, now);
+
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.06, now + 0.006);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.055);
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 0.06);
+  }
+
+  function playDetentClick(){
+    if (!audioCtx || audioCtx.state !== "running") return;
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    osc.type = "square";
+    osc.frequency.setValueAtTime(160, now);
+
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.040, now + 0.002);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.028);
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 0.032);
+  }
+
+  function playLockSound(){
+    if (!audioCtx || audioCtx.state !== "running") return;
+    const now = audioCtx.currentTime;
+
+    const osc1 = audioCtx.createOscillator();
+    const g1 = audioCtx.createGain();
+    osc1.type = "sine";
+    osc1.frequency.setValueAtTime(95, now);
+    osc1.frequency.exponentialRampToValueAtTime(55, now + 0.09);
+    g1.gain.setValueAtTime(0.0001, now);
+    g1.gain.exponentialRampToValueAtTime(0.11, now + 0.012);
+    g1.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
+    osc1.connect(g1); g1.connect(audioCtx.destination);
+    osc1.start(now); osc1.stop(now + 0.18);
+
+    const osc2 = audioCtx.createOscillator();
+    const g2 = audioCtx.createGain();
+    osc2.type = "triangle";
+    osc2.frequency.setValueAtTime(520, now + 0.01);
+    g2.gain.setValueAtTime(0.0001, now + 0.01);
+    g2.gain.exponentialRampToValueAtTime(0.05, now + 0.016);
+    g2.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
+    osc2.connect(g2); g2.connect(audioCtx.destination);
+    osc2.start(now + 0.01); osc2.stop(now + 0.065);
+  }
+
+  function updateUI(){
+    const q = DISPLAY[questionIndex];
+    qNumEl.textContent = `Q${questionIndex + 1}`;
+    qTextEl.textContent = q.prompt;
+    codeEl.textContent = `${progress} / ${DISPLAY.length}`;
+
+    instructionEl.textContent = (state === "RED") ? "Move Dial in Direction of Arrow" : "Move Dial in Direction of Arrow";
+
+    updateAnswersForQuestion(q);
+    renderDirectionArrow();
+    setMarkerDirection();
+    renderRotor();
+
+    lockBtn.disabled = unlocked;
+    lockBtn.style.opacity = unlocked ? 0.6 : 1;
+  }
+
+  buildDisplayData();
+  buildFixedDialOnce();
+  ensureAudioRunning();
+  updateTimerUI();
+  updateUI();
+  startTimer();
+})();
+</script>
+</body>
+</html>
