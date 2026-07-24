@@ -1,0 +1,240 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>House of Deceit — Countdown</title>
+<link rel="icon" type="image/png" href="../assets/logos/eyes-icon.png">
+
+<style>
+  html, body {
+    margin:0;
+    height:100%;
+    background:#000;
+  }
+
+  /* Layout: logo near top, timer block centered-ish, house near bottom */
+  .page{
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+
+  #logo {
+    width: min(900px, 90vw);
+    height: auto;
+    margin-top: 28px;
+    user-select:none;
+    -webkit-user-drag:none;
+  }
+
+  .timerBlock{
+    margin-top: 70px;         /* pushes the countdown down */
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+  }
+
+  #label {
+    color:#ff2a2a;
+    font-family: monospace;
+    font-size: clamp(24px, 4vw, 60px);
+    margin: 0 0 18px 0;
+    text-shadow: 0 0 20px rgba(255,0,0,0.4);
+    user-select:none;
+    text-align:center;
+  }
+
+  #timer {
+    color:#ff2a2a;
+    font-family: monospace;
+    font-size: clamp(60px, 12vw, 160px);
+    font-weight: bold;
+    letter-spacing: 0.08em;
+    text-shadow: 0 0 30px rgba(255,0,0,0.5);
+    user-select:none;
+    text-align:center;
+  }
+
+  #house {
+    width: min(520px, 65vw);
+    height: auto;
+    margin-top: auto;          /* pushes house to bottom area */
+    margin-bottom: 28px;
+    user-select:none;
+    -webkit-user-drag:none;
+    opacity: 0.95;
+    border-radius: 14px;
+  }
+
+  /* Discreet sound toggle */
+  #soundToggle {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    background: rgba(0,0,0,0.55);
+    border: 1px solid rgba(255,42,42,0.35);
+    color: #ff2a2a;
+    font-family: monospace;
+    font-size: 14px;
+    padding: 8px 10px;
+    border-radius: 12px;
+    cursor: pointer;
+    user-select:none;
+  }
+  #soundToggle.on {
+    background: rgba(255,42,42,0.12);
+    border-color: rgba(255,42,42,0.7);
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <img id="logo" src="../assets/logos/logo.png" alt="House of Deceit" />
+
+  <div class="timerBlock">
+    <div id="label"></div>
+    <div id="timer">00:00:00</div>
+  </div>
+
+  <img id="house" src="../assets/house-photos/000 Exterior.png" alt="House" />
+</div>
+
+<button id="soundToggle" type="button">Sound: Off</button>
+
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
+
+const supabase = createClient(
+  "https://hhyfixoxwxmzncosmcqo.supabase.co",
+  "sb_publishable_KWvHkZqW2aAipujklitrdg_C7bSBFce"
+)
+
+const timer = document.getElementById("timer")
+const labelEl = document.getElementById("label")
+const soundToggle = document.getElementById("soundToggle")
+
+let endTime = null
+let interval = null
+
+function pad(n){ return String(n).padStart(2,"0") }
+
+function format(ms){
+  ms = Math.max(0, ms)
+  const total = Math.floor(ms/1000)
+
+  const s = total % 60
+  const m = Math.floor(total/60) % 60
+  const totalHours = Math.floor(total/3600)
+
+  const d = Math.floor(totalHours/24)
+  const h = totalHours % 24
+
+  if (d > 0) return `${d}d ${pad(h)}:${pad(m)}:${pad(s)}`
+  return `${pad(totalHours)}:${pad(m)}:${pad(s)}`
+}
+
+/* ---- Beep (optional, off by default) ---- */
+let audioCtx = null
+let soundEnabled = false
+let lastWholeSeconds = null
+
+function ensureAudio(){
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)()
+}
+
+function pip(){
+  if (!soundEnabled) return
+  ensureAudio()
+  if (audioCtx.state !== "running") return
+
+  const o = audioCtx.createOscillator()
+  const g = audioCtx.createGain()
+
+  o.type = "square"
+  o.frequency.value = 880
+  g.gain.value = 0.05
+
+  o.connect(g)
+  g.connect(audioCtx.destination)
+
+  const t = audioCtx.currentTime
+  g.gain.setValueAtTime(0.0001, t)
+  g.gain.exponentialRampToValueAtTime(0.05, t + 0.005)
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.06)
+
+  o.start(t)
+  o.stop(t + 0.07)
+}
+
+soundToggle.addEventListener("click", async () => {
+  if (!soundEnabled) {
+    ensureAudio()
+    await audioCtx.resume()
+    soundEnabled = true
+    soundToggle.classList.add("on")
+    soundToggle.textContent = "Sound: On"
+    pip()
+  } else {
+    soundEnabled = false
+    soundToggle.classList.remove("on")
+    soundToggle.textContent = "Sound: Off"
+  }
+})
+
+function start(){
+  if(interval) clearInterval(interval)
+
+  interval = setInterval(()=>{
+    if(!endTime) return
+
+    const diffMs = new Date(endTime).getTime() - Date.now()
+    timer.textContent = format(diffMs)
+
+    const whole = Math.max(0, Math.floor(diffMs / 1000))
+    if (lastWholeSeconds === null) lastWholeSeconds = whole
+    if (whole !== lastWholeSeconds) {
+      lastWholeSeconds = whole
+      if (whole > 0) pip()
+    }
+  }, 250)
+}
+
+async function load(){
+  const { data } = await supabase
+    .from("countdowns")
+    .select("*")
+    .eq("id","main")
+    .maybeSingle()
+
+  if(data){
+    endTime = data.end_time
+    labelEl.textContent = data.label || ""
+    lastWholeSeconds = null
+    start()
+  }
+}
+
+await load()
+setInterval(load, 2000);
+
+supabase
+  .channel("countdown-live")
+  .on(
+    "postgres_changes",
+    { event:"*", schema:"public", table:"countdowns", filter:"id=eq.main" },
+    payload => {
+      endTime = payload.new.end_time
+      labelEl.textContent = payload.new.label || ""
+      lastWholeSeconds = null
+      start()
+    }
+  )
+  .subscribe()
+</script>
+
+</body>
+</html>
