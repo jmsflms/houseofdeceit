@@ -20,6 +20,7 @@
 <div class="field"><label class="sr-only" for="email">Email address</label><input id="email" type="email" autocomplete="email" placeholder="Email address" required></div>
 <label class="check"><input id="marketing" type="checkbox"><span>Send me information and marketing materials</span></label>
 <button class="button" id="show-dates">SHOW AVAILABLE DATES</button>
+<button class="button" id="pay-share" type="button" style="display:block;margin-top:10px">PAY MY SHARE OF EXISTING BOOKING</button>
 <div class="status" id="lead-status"></div>
 </div>
 
@@ -53,7 +54,7 @@
 <div class="summary-line"><strong>Group size</strong><span id="sum-size">10</span></div>
 <div class="summary-line total"><strong>Total group price</strong><span id="sum-total">—</span></div>
 <p class="small">The lead booker can secure the date with one place. The remaining minimum group balance is then due under the booking terms.</p>
-<div class="secondary"><strong>Already joining a booking?</strong><p class="small">Use the existing payment or induction route.</p><a href="https://docs.google.com/forms/d/e/1FAIpQLScn_9lk1TGWbfveiKh67Z_PHQ1hhhcqlJbHXJZwSCSoCjFMdA/viewform" target="_blank" rel="noopener">Pay my share or complete induction →</a></div>
+
 </aside>
 </section>
 <section class="after"><div class="wrap"><h2>Get the group chat ready.</h2><p>Once the date is secured, send everyone the link and let the suspicion begin.</p><a class="button" href="index.html">BACK TO THE EXPERIENCE</a></div></section>
@@ -67,6 +68,8 @@ const $=id=>document.getElementById(id);
 function validEmail(v){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())}
 async function apiPost(payload){const r=await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload),redirect:'follow'});return r.json()}
 $('show-dates').addEventListener('click',async()=>{const email=$('email').value.trim();if(!validEmail(email)){ $('lead-status').textContent='Enter a valid email address.';return }$('show-dates').disabled=true;$('lead-status').textContent='Saving your email…';try{const out=await apiPost({action:'saveLead',email,intent:'Book a stay',marketingConsent:$('marketing').checked?'Yes':'No'});if(!out.success)throw new Error(out.error||'Could not save');$('lead-status').textContent='Email saved.';$('calendar-step').classList.remove('hidden');await loadAvailability();$('calendar-step').scrollIntoView({behavior:'smooth',block:'start'});}catch(e){$('lead-status').textContent='We could not save your email. Please try again.';$('show-dates').disabled=false;}});
+$('pay-share').addEventListener('click',async()=>{const email=$('email').value.trim();if(!validEmail(email)){$('lead-status').textContent='Enter a valid email address.';return}$('pay-share').disabled=true;$('lead-status').textContent='Saving your email…';try{const out=await apiPost({action:'saveLead',email,intent:'Pay my share of existing booking',marketingConsent:$('marketing').checked?'Yes':'No'});if(!out.success)throw new Error(out.error||'Could not save');$('lead-status').textContent='Email saved. Opening secure payment…';window.location.href=STRIPE+'?prefilled_email='+encodeURIComponent(email);}catch(e){$('lead-status').textContent='We could not save your email. Please try again.';$('pay-share').disabled=false;}});
+
 async function loadAvailability(){try{const r=await fetch(API+'?action=availability');const data=await r.json();stays=(data.availability||[]).map(stay=>{if(String(stay.package||'').toLowerCase().includes('bank holiday')){return {...stay,pricePerPerson:166,priceType:'Weekend'}}return stay});if(!stays.length)throw new Error();const first=new Date(stays[0].startDate+'T12:00:00');currentMonth=new Date(first.getFullYear(),first.getMonth(),1);renderCalendar();$('calendar-status').textContent='Select a highlighted start date.';}catch(e){$('calendar-status').textContent='Availability could not be loaded. Please refresh or email us.';}}
 function renderCalendar(){const y=currentMonth.getFullYear(),m=currentMonth.getMonth();$('month-title').textContent=currentMonth.toLocaleDateString('en-GB',{month:'long',year:'numeric'});const grid=$('calendar');grid.innerHTML='';let first=(new Date(y,m,1).getDay()+6)%7;for(let i=0;i<first;i++){grid.appendChild(document.createElement('div'))}const days=new Date(y,m+1,0).getDate();for(let d=1;d<=days;d++){const date=new Date(y,m,d),iso=[y,String(m+1).padStart(2,'0'),String(d).padStart(2,'0')].join('-');const stay=stays.find(s=>s.startDate===iso);const cell=document.createElement('button');cell.type='button';cell.className='day'+(stay?' available':'')+(selected&&selected.availabilityId===stay?.availabilityId?' selected':'');cell.disabled=!stay;cell.innerHTML='<span class="day-number">'+d+'</span>'+(stay?'<span class="day-price">£'+stay.pricePerPerson+'pp</span>':'');if(stay)cell.addEventListener('click',()=>selectStay(stay));grid.appendChild(cell)}}
 function selectStay(stay){selected=stay;renderCalendar();$('details-step').classList.remove('hidden');updateSummary();$('details-step').scrollIntoView({behavior:'smooth',block:'start'});}
