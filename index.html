@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="House of Deceit: the UK's most ambitious social game. Two nights of secrets, strategy and suspicion in Whitstable.">
+  <meta name="description" content="House of Deceit: the UK's most ambitious social game. Two nights of secrets, strategy &amp; suspicion in Whitstable.">
   <title>House of Deceit | The next generation of going out is staying in</title>
   <link rel="icon" type="image/png" href="assets/logos/eyes-icon.png">
   <style>
@@ -51,16 +51,21 @@
     .day-card{margin:0 0 14px;padding:14px 15px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.12);border-left:3px solid var(--gold);border-radius:8px}
     .day-card h3{margin:0 0 10px;color:var(--gold);font:900 1rem/1.2 Arial,sans-serif;letter-spacing:.12em}
     .schedule{display:grid;gap:5px}
-    .schedule-row{display:grid;grid-template-columns:76px minmax(0,1fr);gap:10px;align-items:start;font-size:1rem;line-height:1.35}
+    .schedule-row{display:grid;grid-template-columns:92px minmax(0,1fr);gap:12px;align-items:start;font-size:1rem;line-height:1.35}
     .schedule-time{font-weight:900;color:#fff;white-space:nowrap}
     .rules-note{margin:8px 0 0!important;font-size:1rem!important;line-height:1.4}
-    .feature-block{margin:0 0 14px}
-    .feature-block .button{padding:10px 14px;font-size:.82rem}
-    .feature-block p{margin:7px 0 0!important;font-size:1rem!important;line-height:1.4}
-    .placeholder-link{background:#343036!important;color:#aaa!important;border:1px solid #625a67;cursor:not-allowed}
+    .feature-list{display:grid;gap:10px;margin-top:14px}
+    .feature-row{display:grid;grid-template-columns:154px minmax(0,1fr);gap:12px;align-items:center}
+    .feature-row .button{width:154px;min-height:42px;padding:10px 10px;font-size:.78rem;text-align:center;display:flex;align-items:center;justify-content:center}
+    .feature-row p{margin:0!important;font-size:.95rem!important;line-height:1.35}
+    .placeholder-link{background:var(--red)!important;color:#fff!important;border:0;cursor:not-allowed;opacity:.55}
+    .countdown-row{margin-top:12px}
     @media(max-width:520px){
-      .schedule-row{grid-template-columns:68px minmax(0,1fr);gap:8px}
+      .schedule-row{grid-template-columns:82px minmax(0,1fr);gap:8px}
       .day-card{padding:13px 12px}
+      .feature-row{grid-template-columns:132px minmax(0,1fr);gap:9px}
+      .feature-row .button{width:132px;min-height:40px;font-size:.7rem;padding:8px 6px}
+      .feature-row p{font-size:.88rem!important}
     }
     .eyes-strip{position:absolute;left:-30px;top:-25px;width:min(560px,72vw);opacity:.32;z-index:-1;pointer-events:none}
     .mosaic{display:flex;flex-direction:column;gap:10px;width:100%;max-width:500px;margin-left:auto}
@@ -173,46 +178,49 @@
         <h2>Are you trapped in a house with killers?<br>Or are innocent people trapped in a house with you?</h2>
 
         <section class="day-card">
-          <h3>Night One</h3>
+          <h3>NIGHT 1</h3>
           <div class="schedule">
             <div class="schedule-row"><span class="schedule-time">4pm</span><span>Check-in opens</span></div>
             <div class="schedule-row"><span class="schedule-time">8pm</span><span>Roll Call, roles assigned, pizzas arrive</span></div>
             <div class="schedule-row"><span class="schedule-time">9pm</span><span>The first murder</span></div>
-            <div class="schedule-row"><span class="schedule-time">10pm</span><span>The first trial and execution</span></div>
-            <div class="schedule-row"><span class="schedule-time">11pm</span><span>Latecomers’ punishment and catch-up</span></div>
+            <div class="schedule-row"><span class="schedule-time">10pm</span><span>The first trial &amp; execution</span></div>
+            <div class="schedule-row"><span class="schedule-time">11pm</span><span>Latecomers’ punishment &amp; catch-up</span></div>
+          </div>
+          <div class="feature-row countdown-row">
+            <a class="button" href="countdown/">COUNTDOWN</a>
+            <p></p>
           </div>
         </section>
 
         <section class="day-card">
-          <h3>Day Two</h3>
+          <h3>DAY 2</h3>
           <div class="schedule">
             <div class="schedule-row"><span class="schedule-time">Every 2 hrs</span><span>Murder committed</span></div>
-            <div class="schedule-row"><span class="schedule-time">Every 2 hrs</span><span>Trial and execution</span></div>
+            <div class="schedule-row"><span class="schedule-time">Every 2 hrs</span><span>Trial &amp; execution</span></div>
             <div class="schedule-row"><span class="schedule-time">7pm</span><span>The ritual of the Pact of Three begins</span></div>
             <div class="schedule-row"><span class="schedule-time">9pm</span><span>The Pact of Three is formed in blood</span></div>
           </div>
-          <p class="rules-note">When five people remain, everything stops, except the tension.</p>
+          <p class="rules-note">When 5 people remain, everything stops, except the tension.</p>
+
+          <div class="feature-list">
+            <div class="feature-row">
+              <a class="button placeholder-link" href="#" aria-disabled="true" onclick="return false">LEADERBOARD</a>
+              <p>Competing in challenges creates advantages &amp; exposes motive.</p>
+            </div>
+            <div class="feature-row">
+              <a class="button" href="hunt/">TREASURE HUNT</a>
+              <p>Follow the clues. Watch your enemies closely.</p>
+            </div>
+            <div class="feature-row">
+              <a class="button placeholder-link" href="#" aria-disabled="true" onclick="return false">SECRET MESSAGES</a>
+              <p>Information, disinformation &amp; clues.</p>
+            </div>
+          </div>
         </section>
 
-        <div class="feature-block">
-          <a class="button placeholder-link" href="#" aria-disabled="true" onclick="return false">LEADERBOARD</a>
-          <p>Challenges change positions on the leaderboard. Your position creates advantages and exposes hidden motives.</p>
-        </div>
-
-        <div class="feature-block">
-          <a class="button" href="hunt/">TREASURE HUNT</a>
-          <p>Follow the clues. Watch your enemies closely.</p>
-        </div>
-
-        <div class="feature-block">
-          <a class="button placeholder-link" href="#" aria-disabled="true" onclick="return false">SECRET MESSAGES</a>
-          <p>Information, disinformation and clues.</p>
-        </div>
-
         <section class="day-card">
-          <h3>Day Three</h3>
+          <h3>DAY 3</h3>
           <p class="rules-note">The losing team, Killers or Innocents, faces its punishment. You are then free to leave.</p>
-          <div class="feature-block" style="margin-top:12px;margin-bottom:0"><a class="button" href="countdown/">COUNTDOWN</a></div>
         </section>
       </div>
       <div class="mosaic" id="reaction-stack">
@@ -233,14 +241,14 @@
         <!-- Placeholder reviews: replace each card with a genuine guest review before publication. -->
         <div class="reviews" id="reviews-carousel">
           <article class="review-card"><div class="review-head"><span class="review-avatar avatar-blue"></span><div><div class="review-name">Google user</div><div class="review-date">Guest review</div></div></div><div class="review-stars" aria-label="5 out of 5 stars">★★★★★</div><p class="review-copy">This was F*** amazing, book it now, it will sell out.</p></article>
-          <article class="review-card"><div class="review-head"><span class="review-avatar avatar-red"></span><div><div class="review-name">Google user</div><div class="review-date">Guest review</div></div></div><div class="review-stars" aria-label="5 out of 5 stars">★★★★★</div><p class="review-copy">Two days later and the group chat is still arguing about who betrayed whom. Absolutely brilliant.</p></article>
+          <article class="review-card"><div class="review-head"><span class="review-avatar avatar-red"></span><div><div class="review-name">Google user</div><div class="review-date">Guest review</div></div></div><div class="review-stars" aria-label="5 out of 5 stars">★★★★★</div><p class="review-copy">Two days later &amp; the group chat is still arguing about who betrayed whom. Absolutely brilliant.</p></article>
           <article class="review-card"><div class="review-head"><span class="review-avatar avatar-yellow"></span><div><div class="review-name">Google user</div><div class="review-date">Guest review</div></div></div><div class="review-stars" aria-label="5 out of 5 stars">★★★★★</div><p class="review-copy">The whole group committed to it immediately. I have never laughed so much over one weekend.</p></article>
-          <article class="review-card"><div class="review-head"><span class="review-avatar avatar-green"></span><div><div class="review-name">Google user</div><div class="review-date">Guest review</div></div></div><div class="review-stars" aria-label="5 out of 5 stars">★★★★★</div><p class="review-copy">Worth every penny. The house, the games and the constant suspicion made it completely unforgettable.</p></article>
-          <article class="review-card"><div class="review-head"><span class="review-avatar avatar-purple"></span><div><div class="review-name">Google user</div><div class="review-date">Guest review</div></div></div><div class="review-stars" aria-label="5 out of 5 stars">★★★★★</div><p class="review-copy">We booked it for a birthday and every single person left saying it was the best group weekend we had done.</p></article>
-          <article class="review-card"><div class="review-head"><span class="review-avatar avatar-blue"></span><div><div class="review-name">Google user</div><div class="review-date">Guest review</div></div></div><div class="review-stars" aria-label="5 out of 5 stars">★★★★★</div><p class="review-copy">It starts the moment you arrive and takes over everything. By Saturday, nobody trusted anybody.</p></article>
-          <article class="review-card"><div class="review-head"><span class="review-avatar avatar-red"></span><div><div class="review-name">Google user</div><div class="review-date">Guest review</div></div></div><div class="review-stars" aria-label="5 out of 5 stars">★★★★★</div><p class="review-copy">Impossible to explain without spoiling it. Get your favourite people together and experience it yourselves.</p></article>
+          <article class="review-card"><div class="review-head"><span class="review-avatar avatar-green"></span><div><div class="review-name">Google user</div><div class="review-date">Guest review</div></div></div><div class="review-stars" aria-label="5 out of 5 stars">★★★★★</div><p class="review-copy">Worth every penny. The house, the games &amp; the constant suspicion made it completely unforgettable.</p></article>
+          <article class="review-card"><div class="review-head"><span class="review-avatar avatar-purple"></span><div><div class="review-name">Google user</div><div class="review-date">Guest review</div></div></div><div class="review-stars" aria-label="5 out of 5 stars">★★★★★</div><p class="review-copy">We booked it for a birthday &amp; every single person left saying it was the best group weekend we had done.</p></article>
+          <article class="review-card"><div class="review-head"><span class="review-avatar avatar-blue"></span><div><div class="review-name">Google user</div><div class="review-date">Guest review</div></div></div><div class="review-stars" aria-label="5 out of 5 stars">★★★★★</div><p class="review-copy">It starts the moment you arrive &amp; takes over everything. By Saturday, nobody trusted anybody.</p></article>
+          <article class="review-card"><div class="review-head"><span class="review-avatar avatar-red"></span><div><div class="review-name">Google user</div><div class="review-date">Guest review</div></div></div><div class="review-stars" aria-label="5 out of 5 stars">★★★★★</div><p class="review-copy">Impossible to explain without spoiling it. Get your favourite people together &amp; experience it yourselves.</p></article>
           <article class="review-card"><div class="review-head"><span class="review-avatar avatar-yellow"></span><div><div class="review-name">Google user</div><div class="review-date">Guest review</div></div></div><div class="review-stars" aria-label="5 out of 5 stars">★★★★★</div><p class="review-copy">Everyone got involved, including the quieter people in our group. It brought out a completely different side of us.</p></article>
-          <article class="review-card"><div class="review-head"><span class="review-avatar avatar-green"></span><div><div class="review-name">Google user</div><div class="review-date">Guest review</div></div></div><div class="review-stars" aria-label="5 out of 5 stars">★★★★★</div><p class="review-copy">We were laughing, accusing each other and making secret deals all weekend. I already want to do it again.</p></article>
+          <article class="review-card"><div class="review-head"><span class="review-avatar avatar-green"></span><div><div class="review-name">Google user</div><div class="review-date">Guest review</div></div></div><div class="review-stars" aria-label="5 out of 5 stars">★★★★★</div><p class="review-copy">We were laughing, accusing each other &amp; making secret deals all weekend. I already want to do it again.</p></article>
           <article class="review-card"><div class="review-head"><span class="review-avatar avatar-purple"></span><div><div class="review-name">Google user</div><div class="review-date">Guest review</div></div></div><div class="review-stars" aria-label="5 out of 5 stars">★★★★★</div><p class="review-copy">If you are trying to organise a group trip, stop searching. This is the weekend everyone will remember.</p></article>
         </div>
         <div class="review-controls">
@@ -290,9 +298,9 @@
   <section>
     <div class="wrap split">
       <div>
-        <p class="eyebrow">Food and drink</p>
+        <p class="eyebrow">Food &amp; drink</p>
         <h2>Feed the group. Distrust everyone.</h2>
-        <p class="kicker">The house is self-catered, with a large kitchen, five ovens and two full-size fridges. Supermarket deliveries can be sent directly to the property.</p>
+        <p class="kicker">The house is self-catered, with a large kitchen, five ovens &amp; two full-size fridges. Supermarket deliveries can be sent directly to the property.</p>
         <p><strong>Welcome pizzas from the Woodfired Kitchen are included on the first evening.</strong></p>
         <p>Fully catered options may be available by prior arrangement.</p>
       </div>
