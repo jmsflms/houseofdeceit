@@ -47,15 +47,21 @@
     .split{display:grid;grid-template-columns:1.1fr .9fr;gap:42px;align-items:center}
     .experience-section{position:relative;overflow:hidden;padding-top:112px}
     .experience-copy{position:relative;z-index:2}
-    .house-rules h2{font-size:clamp(2.25rem,4.4vw,4.6rem);max-width:720px;margin-bottom:24px}
-    .rules-group{margin:0 0 20px}
-    .rules-group h3{margin:0 0 8px;color:var(--gold);font:900 1rem/1.2 Arial,sans-serif;letter-spacing:.14em;text-transform:none}
-    .rule-line{margin:4px 0!important;font-size:1rem!important;line-height:1.35}
-    .rule-line strong{color:#fff}
-    .rules-note{margin:7px 0!important;font-size:1rem!important;line-height:1.4}
-    .rule-buttons{display:flex;flex-wrap:wrap;gap:9px;margin-top:10px}
-    .rule-buttons .button{padding:10px 14px;font-size:.82rem}
+    .house-rules h2{font:900 clamp(1.05rem,1.65vw,1.35rem)/1.3 Arial,sans-serif;max-width:620px;margin:5px 0 18px;letter-spacing:.01em}
+    .day-card{margin:0 0 14px;padding:14px 15px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.12);border-left:3px solid var(--gold);border-radius:8px}
+    .day-card h3{margin:0 0 10px;color:var(--gold);font:900 1rem/1.2 Arial,sans-serif;letter-spacing:.12em}
+    .schedule{display:grid;gap:5px}
+    .schedule-row{display:grid;grid-template-columns:76px minmax(0,1fr);gap:10px;align-items:start;font-size:1rem;line-height:1.35}
+    .schedule-time{font-weight:900;color:#fff;white-space:nowrap}
+    .rules-note{margin:8px 0 0!important;font-size:1rem!important;line-height:1.4}
+    .feature-block{margin:0 0 14px}
+    .feature-block .button{padding:10px 14px;font-size:.82rem}
+    .feature-block p{margin:7px 0 0!important;font-size:1rem!important;line-height:1.4}
     .placeholder-link{background:#343036!important;color:#aaa!important;border:1px solid #625a67;cursor:not-allowed}
+    @media(max-width:520px){
+      .schedule-row{grid-template-columns:68px minmax(0,1fr);gap:8px}
+      .day-card{padding:13px 12px}
+    }
     .eyes-strip{position:absolute;left:-30px;top:-25px;width:min(560px,72vw);opacity:.32;z-index:-1;pointer-events:none}
     .mosaic{display:flex;flex-direction:column;gap:10px;width:100%;max-width:500px;margin-left:auto}
     .mosaic img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:8px;transition:opacity .35s ease}
@@ -166,50 +172,48 @@
         <p class="eyebrow">House rules</p>
         <h2>Are you trapped in a house with killers?<br>Or are innocent people trapped in a house with you?</h2>
 
-        <div class="rules-group">
+        <section class="day-card">
           <h3>Night One</h3>
-          <p class="rule-line"><strong>4pm</strong> — Check-in opens</p>
-          <p class="rule-line"><strong>8pm</strong> — Roll Call, roles assigned, pizzas arrive</p>
-          <p class="rule-line"><strong>9pm</strong> — The first murder</p>
-          <p class="rule-line"><strong>10pm</strong> — The first trial and execution</p>
-          <p class="rule-line"><strong>11pm</strong> — Latecomers’ punishment and catch-up</p>
-        </div>
+          <div class="schedule">
+            <div class="schedule-row"><span class="schedule-time">4pm</span><span>Check-in opens</span></div>
+            <div class="schedule-row"><span class="schedule-time">8pm</span><span>Roll Call, roles assigned, pizzas arrive</span></div>
+            <div class="schedule-row"><span class="schedule-time">9pm</span><span>The first murder</span></div>
+            <div class="schedule-row"><span class="schedule-time">10pm</span><span>The first trial and execution</span></div>
+            <div class="schedule-row"><span class="schedule-time">11pm</span><span>Latecomers’ punishment and catch-up</span></div>
+          </div>
+        </section>
 
-        <div class="rules-group">
+        <section class="day-card">
           <h3>Day Two</h3>
-          <p class="rule-line">Murder committed every two hours</p>
-          <p class="rule-line">Trial and execution every two hours</p>
-          <p class="rules-note">When five people remain, everything stops—except the tension.</p>
-          <p class="rule-line"><strong>7pm</strong> — The ritual of the Pact of Three begins</p>
-          <p class="rule-line"><strong>9pm</strong> — The Pact of Three is formed in blood</p>
+          <div class="schedule">
+            <div class="schedule-row"><span class="schedule-time">Every 2 hrs</span><span>Murder committed</span></div>
+            <div class="schedule-row"><span class="schedule-time">Every 2 hrs</span><span>Trial and execution</span></div>
+            <div class="schedule-row"><span class="schedule-time">7pm</span><span>The ritual of the Pact of Three begins</span></div>
+            <div class="schedule-row"><span class="schedule-time">9pm</span><span>The Pact of Three is formed in blood</span></div>
+          </div>
+          <p class="rules-note">When five people remain, everything stops, except the tension.</p>
+        </section>
+
+        <div class="feature-block">
+          <a class="button placeholder-link" href="#" aria-disabled="true" onclick="return false">LEADERBOARD</a>
+          <p>Challenges change positions on the leaderboard. Your position creates advantages and exposes hidden motives.</p>
         </div>
 
-        <div class="rules-group">
-          <h3>Additional</h3>
-          <p class="rules-note">Challenges change positions on the leaderboard. Your position creates advantages and exposes hidden motives.</p>
+        <div class="feature-block">
+          <a class="button" href="hunt/">TREASURE HUNT</a>
+          <p>Follow the clues. Watch your enemies closely.</p>
         </div>
 
-        <div class="rules-group">
-          <h3>Treasure Hunt</h3>
-          <p class="rules-note">Follow the clues. Watch your enemies closely.</p>
-          <div class="rule-buttons"><a class="button" href="hunt/">ENTER THE TREASURE HUNT</a></div>
+        <div class="feature-block">
+          <a class="button placeholder-link" href="#" aria-disabled="true" onclick="return false">SECRET MESSAGES</a>
+          <p>Information, disinformation and clues.</p>
         </div>
 
-        <div class="rules-group">
-          <h3>Secret Messages</h3>
-          <p class="rules-note">Information, disinformation and clues.</p>
-          <div class="rule-buttons"><a class="button placeholder-link" href="#" aria-disabled="true" onclick="return false">VIEW SECRET MESSAGES — COMING SOON</a></div>
-        </div>
-
-        <div class="rules-group">
+        <section class="day-card">
           <h3>Day Three</h3>
-          <p class="rules-note">The losing team—Killers or Innocents—faces its punishment. You are then free to leave.</p>
-        </div>
-
-        <div class="rule-buttons">
-          <a class="button" href="countdown/">VIEW THE COUNTDOWN</a>
-          <a class="button placeholder-link" href="#" aria-disabled="true" onclick="return false">VIEW THE LEADERBOARD — COMING SOON</a>
-        </div>
+          <p class="rules-note">The losing team, Killers or Innocents, faces its punishment. You are then free to leave.</p>
+          <div class="feature-block" style="margin-top:12px;margin-bottom:0"><a class="button" href="countdown/">COUNTDOWN</a></div>
+        </section>
       </div>
       <div class="mosaic" id="reaction-stack">
         <img src="assets/reactions/reaction2.png" alt="Guests reacting during House of Deceit">
