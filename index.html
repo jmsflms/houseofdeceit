@@ -7,7 +7,7 @@
   <title>House of Deceit | The next generation of going out is staying in</title>
   <link rel="icon" type="image/png" href="assets/logos/eyes-icon.png">
   <style>
-    :root{--black:#070609;--purple:#241331;--cream:#f5ead8;--red:#c91f2c;--gold:#e4b45a;--muted:#c8becd;--max:1160px}
+    :root{--black:#070609;--purple:#241331;--cream:#f5ead8;--red:#c91f2c;--gold:#ffe600;--muted:#c8becd;--max:1160px}
     *{box-sizing:border-box}
     html{scroll-behavior:smooth}
     body{margin:0;background:var(--black);color:var(--cream);font-family:Arial,sans-serif;line-height:1.5}
@@ -20,7 +20,7 @@
     .links a{font-weight:900;font-style:italic;text-decoration:none;letter-spacing:.08em}
     .follow{color:var(--gold)!important}
     .follow-link{display:inline-flex;align-items:center;gap:7px}
-    .follow-link img{width:20px;height:20px;object-fit:contain}
+    .follow-link img{width:30px;height:30px;object-fit:contain}
     .book,.button{display:inline-block;background:var(--red);padding:13px 22px;border-radius:5px;color:#fff!important;font-weight:900;text-decoration:none}
     .hero{position:relative}
     .video{position:relative;background:#000;aspect-ratio:16/9;overflow:hidden}
@@ -47,6 +47,15 @@
     .split{display:grid;grid-template-columns:1.1fr .9fr;gap:42px;align-items:center}
     .experience-section{position:relative;overflow:hidden;padding-top:112px}
     .experience-copy{position:relative;z-index:2}
+    .house-rules h2{font-size:clamp(2.25rem,4.4vw,4.6rem);max-width:720px;margin-bottom:24px}
+    .rules-group{margin:0 0 20px}
+    .rules-group h3{margin:0 0 8px;color:var(--gold);font:900 1rem/1.2 Arial,sans-serif;letter-spacing:.14em;text-transform:none}
+    .rule-line{margin:4px 0!important;font-size:1rem!important;line-height:1.35}
+    .rule-line strong{color:#fff}
+    .rules-note{margin:7px 0!important;font-size:1rem!important;line-height:1.4}
+    .rule-buttons{display:flex;flex-wrap:wrap;gap:9px;margin-top:10px}
+    .rule-buttons .button{padding:10px 14px;font-size:.82rem}
+    .placeholder-link{background:#343036!important;color:#aaa!important;border:1px solid #625a67;cursor:not-allowed}
     .eyes-strip{position:absolute;left:-30px;top:-25px;width:min(560px,72vw);opacity:.32;z-index:-1;pointer-events:none}
     .mosaic{display:flex;flex-direction:column;gap:10px;width:100%;max-width:500px;margin-left:auto}
     .mosaic img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:8px;transition:opacity .35s ease}
@@ -89,7 +98,7 @@
     @media(max-width:760px){
       .links a:not(.follow):not(.book){display:none}
       .follow{font-size:.8rem}
-      .follow-link img{width:18px;height:18px}
+      .follow-link img{width:26px;height:26px}
       nav{min-height:78px}
       .logo img{width:112px;max-height:54px}
       .video{aspect-ratio:16/9}
@@ -152,13 +161,55 @@
 
   <section id="experience" class="experience-section">
     <div class="wrap split">
-      <div class="experience-copy">
+      <div class="experience-copy house-rules">
         <img class="eyes-strip" src="assets/logos/eyesslim.gif" alt="" aria-hidden="true">
-        <p class="eyebrow">A new kind of weekend</p>
-        <h2>This is not something you watch.</h2>
-        <p class="kicker">It is a living game that takes over the house, the conversations and the entire weekend.</p>
-        <div class="chips"><span class="chip">Secrets</span><span class="chip">Alliances</span><span class="chip">Accusations</span><span class="chip">Games</span><span class="chip">A dramatic finale</span></div>
-        <a class="button" href="bookings.html">WHO ARE YOU BRINGING?</a>
+        <p class="eyebrow">House rules</p>
+        <h2>Are you trapped in a house with killers?<br>Or are innocent people trapped in a house with you?</h2>
+
+        <div class="rules-group">
+          <h3>Night One</h3>
+          <p class="rule-line"><strong>4pm</strong> — Check-in opens</p>
+          <p class="rule-line"><strong>8pm</strong> — Roll Call, roles assigned, pizzas arrive</p>
+          <p class="rule-line"><strong>9pm</strong> — The first murder</p>
+          <p class="rule-line"><strong>10pm</strong> — The first trial and execution</p>
+          <p class="rule-line"><strong>11pm</strong> — Latecomers’ punishment and catch-up</p>
+        </div>
+
+        <div class="rules-group">
+          <h3>Day Two</h3>
+          <p class="rule-line">Murder committed every two hours</p>
+          <p class="rule-line">Trial and execution every two hours</p>
+          <p class="rules-note">When five people remain, everything stops—except the tension.</p>
+          <p class="rule-line"><strong>7pm</strong> — The ritual of the Pact of Three begins</p>
+          <p class="rule-line"><strong>9pm</strong> — The Pact of Three is formed in blood</p>
+        </div>
+
+        <div class="rules-group">
+          <h3>Additional</h3>
+          <p class="rules-note">Challenges change positions on the leaderboard. Your position creates advantages and exposes hidden motives.</p>
+        </div>
+
+        <div class="rules-group">
+          <h3>Treasure Hunt</h3>
+          <p class="rules-note">Follow the clues. Watch your enemies closely.</p>
+          <div class="rule-buttons"><a class="button" href="hunt/">ENTER THE TREASURE HUNT</a></div>
+        </div>
+
+        <div class="rules-group">
+          <h3>Secret Messages</h3>
+          <p class="rules-note">Information, disinformation and clues.</p>
+          <div class="rule-buttons"><a class="button placeholder-link" href="#" aria-disabled="true" onclick="return false">VIEW SECRET MESSAGES — COMING SOON</a></div>
+        </div>
+
+        <div class="rules-group">
+          <h3>Day Three</h3>
+          <p class="rules-note">The losing team—Killers or Innocents—faces its punishment. You are then free to leave.</p>
+        </div>
+
+        <div class="rule-buttons">
+          <a class="button" href="countdown/">VIEW THE COUNTDOWN</a>
+          <a class="button placeholder-link" href="#" aria-disabled="true" onclick="return false">VIEW THE LEADERBOARD — COMING SOON</a>
+        </div>
       </div>
       <div class="mosaic" id="reaction-stack">
         <img src="assets/reactions/reaction2.png" alt="Guests reacting during House of Deceit">
