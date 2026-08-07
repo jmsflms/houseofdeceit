@@ -37,10 +37,11 @@
     .hero-detail{background:var(--cream);color:#211524}
     .hero-buttons .button{width:100%}
     .sound-button{position:absolute;left:max(18px,calc((100vw - var(--max))/2));top:18px;right:auto;bottom:auto;z-index:4;border:1px solid #fff;border-radius:999px;padding:10px 16px;background:rgba(0,0,0,.68);color:#fff;font-weight:800;cursor:pointer}
-    .death-card{position:absolute;width:min(180px,25vw);z-index:5;filter:drop-shadow(0 14px 20px rgba(0,0,0,.4))}
+    .death-card{position:absolute;width:min(180px,25vw);z-index:5;filter:drop-shadow(0 14px 20px rgba(0,0,0,.4));transition:opacity .25s ease}
+    .death-card.is-changing,.secondary-death-card.is-changing{opacity:0}
     .hero-card{right:max(80px,calc((100vw - var(--max))/2 + 80px));top:18%;transform:rotate(7deg)}
     .death-card-row{position:absolute;left:52%;bottom:-88px;z-index:6;display:flex;align-items:flex-start;gap:24px;pointer-events:none}
-    .secondary-death-card{width:120px;filter:drop-shadow(0 12px 18px rgba(0,0,0,.45))}
+    .secondary-death-card{width:120px;filter:drop-shadow(0 12px 18px rgba(0,0,0,.45));transition:opacity .25s ease}
     .secondary-death-card:nth-child(1){transform:rotate(-6deg)}
     .secondary-death-card:nth-child(2){transform:rotate(4deg)}
     .secondary-death-card:nth-child(3){transform:rotate(-3deg)}
@@ -160,7 +161,7 @@
       <div class="shade"></div>
       <button class="sound-button" id="sound-button" type="button">Sound On!</button>
     </div>
-    <img class="death-card hero-card" src="assets/death-who-cutouts/deathwho1.png" alt="Death Who character">
+    <img class="death-card hero-card" src="assets/death-who-cutouts/barney1.png" alt="Death Who character">
     <div class="hero-copy">
       <div class="wrap">
         <p class="eyebrow">House of Deceit</p>
@@ -174,9 +175,9 @@
           <a class="button" href="bookings.html">SEE AVAILABLE WEEKENDS</a>
         </div>
         <div class="death-card-row" aria-label="Death Who characters">
-          <img class="secondary-death-card" src="assets/death-who-cutouts/deathwho6.png" alt="Death Who character">
-          <img class="secondary-death-card" src="assets/death-who-cutouts/deathwho2.png" alt="Death Who character">
-          <img class="secondary-death-card" src="assets/death-who-cutouts/deathwho3.png" alt="Death Who character">
+          <img class="secondary-death-card" src="assets/death-who-cutouts/barney2.png" alt="Death Who character">
+          <img class="secondary-death-card" src="assets/death-who-cutouts/barney3.png" alt="Death Who character">
+          <img class="secondary-death-card" src="assets/death-who-cutouts/barney4.png" alt="Death Who character">
         </div>
       </div>
     </div>
@@ -212,7 +213,6 @@
             <div class="schedule-row"><span class="schedule-time">7pm</span><span>The ritual of the Pact of Three begins</span></div>
             <div class="schedule-row"><span class="schedule-time">9pm</span><span>The Pact of Three is formed in blood</span></div>
           </div>
-    
           <div class="feature-list">
             <div class="feature-row">
               <a class="button placeholder-link" href="#" aria-disabled="true" onclick="return false">LEADERBOARD</a>
@@ -286,7 +286,7 @@
   </section>
 
   <section class="house purple">
-    <img class="death-card house-card" src="assets/death-who-cutouts/deathwho6.png" alt="Death Who character">
+    <img class="death-card house-card" src="assets/death-who-cutouts/barney5.png" alt="Death Who character">
     <div class="wrap location">
       <div>
         <p class="eyebrow">The first house</p>
@@ -327,8 +327,6 @@
       <a class="follow" href="https://www.instagram.com/house.of.deceit/" target="_blank" rel="noopener">SEND THIS TO THE GROUP CHAT →</a>
     </div>
   </section>
-
-
 </main>
 <footer>
   <div class="wrap foot">
@@ -347,66 +345,9 @@
   document.getElementById('reviews-next').addEventListener('click',()=>reviewsCarousel.scrollBy({left:reviewScroll(),behavior:'smooth'}));
 
   const reactionImages=[
-    'assets/reactions/reaction2.png',
-    'assets/reactions/reaction3.png',
-    'assets/reactions/reaction4.png',
-    'assets/reactions/reaction6.png',
-    'assets/reactions/reaction7.png',
-    'assets/reactions/reaction8.png',
-    'assets/reactions/reaction9.png',
-    'assets/reactions/reaction10.png',
-    'assets/reactions/reaction11.png',
-    'assets/reactions/reaction12.png',
-    'assets/event-photos/event3.png',
-    'assets/event-photos/event4.png',
-    'assets/event-photos/event7.png',
-    'assets/event-photos/event12.png',
-    'assets/event-photos/event16.png',
-    'assets/event-photos/event17.png',
-    'assets/event-photos/event19.png',
-    'assets/event-photos/event20.png',
-    'assets/event-photos/event27.png',
-    'assets/event-photos/event28.png',
-    'assets/event-photos/event29.png',
-    'assets/event-photos/event31.png',
-    'assets/event-photos/event32.png',
-    'assets/event-photos/event33.png',
-    'assets/event-photos/event34.png',
-    'assets/event-photos/event37.png',
-    'assets/event-photos/event38.png',
-    'assets/event-photos/event40.png',
-    'assets/event-photos/event41.png',
-    'assets/event-photos/event42.png',
-    'assets/event-photos/event43.png',
-    'assets/event-photos/event44.png',
-    'assets/event-photos/event45.png',
-    'assets/event-photos/event46.png',
-    'assets/event-photos/event47.png',
-    'assets/event-photos/event48.png',
-    'assets/event-photos/event49.png',
-    'assets/event-photos/event50.png',
-    'assets/event-photos/event51.png',
-    'assets/event-photos/event52.png',
-    'assets/event-photos/event53.png',
-    'assets/event-photos/event55.png',
-    'assets/event-photos/event56.png',
-    'assets/event-photos/event57.png',
-    'assets/event-photos/event58.png',
-    'assets/event-photos/event59.png',
-    'assets/event-photos/event60.png',
-    'assets/event-photos/event70.png',
-    'assets/event-photos/event71.png',
-    'assets/event-photos/event72.png',
-    'assets/event-photos/event73.png',
-    'assets/event-photos/event74.jpeg',
-    'assets/house-photos/000 Exterior.png',
-    'assets/house-photos/004 Games Room.png',
-    'assets/house-photos/007 Tea Room.png',
-    'assets/house-photos/008 Trial Room.png',
-    'assets/house-photos/011 Bedroom 2.png',
-    'assets/house-photos/014 Bedroom 1.png',
-    'assets/house-photos/017 Bedroom 3.png',
-    'assets/house-photos/019 Garden.png'
+    'assets/reactions/reaction2.png','assets/reactions/reaction3.png','assets/reactions/reaction4.png','assets/reactions/reaction6.png','assets/reactions/reaction7.png','assets/reactions/reaction8.png','assets/reactions/reaction9.png','assets/reactions/reaction10.png','assets/reactions/reaction11.png','assets/reactions/reaction12.png',
+    'assets/event-photos/event3.png','assets/event-photos/event4.png','assets/event-photos/event7.png','assets/event-photos/event12.png','assets/event-photos/event16.png','assets/event-photos/event17.png','assets/event-photos/event19.png','assets/event-photos/event20.png','assets/event-photos/event27.png','assets/event-photos/event28.png','assets/event-photos/event29.png','assets/event-photos/event31.png','assets/event-photos/event32.png','assets/event-photos/event33.png','assets/event-photos/event34.png','assets/event-photos/event37.png','assets/event-photos/event38.png','assets/event-photos/event40.png','assets/event-photos/event41.png','assets/event-photos/event42.png','assets/event-photos/event43.png','assets/event-photos/event44.png','assets/event-photos/event45.png','assets/event-photos/event46.png','assets/event-photos/event47.png','assets/event-photos/event48.png','assets/event-photos/event49.png','assets/event-photos/event50.png','assets/event-photos/event51.png','assets/event-photos/event52.png','assets/event-photos/event53.png','assets/event-photos/event55.png','assets/event-photos/event56.png','assets/event-photos/event57.png','assets/event-photos/event58.png','assets/event-photos/event59.png','assets/event-photos/event60.png','assets/event-photos/event70.png','assets/event-photos/event71.png','assets/event-photos/event72.png','assets/event-photos/event73.png','assets/event-photos/event74.jpeg',
+    'assets/house-photos/000 Exterior.png','assets/house-photos/004 Games Room.png','assets/house-photos/007 Tea Room.png','assets/house-photos/008 Trial Room.png','assets/house-photos/011 Bedroom 2.png','assets/house-photos/014 Bedroom 1.png','assets/house-photos/017 Bedroom 3.png','assets/house-photos/019 Garden.png'
   ];
   const reactionSlots=[...document.querySelectorAll('#reaction-stack img')];
   if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
@@ -423,6 +364,44 @@
       };
       setTimeout(changeReaction,300+(index*230)+Math.random()*350);
     });
+  }
+
+  const deathWhoImages=[
+    ...Array.from({length:12},(_,i)=>`assets/death-who-cutouts/barney${i+1}.png`),
+    'assets/death-who-cutouts/Barney13.png','assets/death-who-cutouts/Barney14.png','assets/death-who-cutouts/barney15.png',
+    ...Array.from({length:15},(_,i)=>`assets/death-who-cutouts/David${i+1}.png`),
+    ...Array.from({length:11},(_,i)=>`assets/death-who-cutouts/Kate${i+1}.png`),
+    ...Array.from({length:12},(_,i)=>`assets/death-who-cutouts/Melody${i+1}.png`)
+  ];
+  const allDeathSlots=[...document.querySelectorAll('.hero-card,.house-card,.secondary-death-card')];
+  const usedDeathImages=()=>new Set(allDeathSlots.map(img=>img.src.split('/').slice(-2).join('/')));
+  const relativeDeathPath=path=>path.split('/').slice(-2).join('/');
+  const nextDeathImage=(current)=>{
+    const blocked=usedDeathImages();
+    blocked.delete(relativeDeathPath(current));
+    const choices=deathWhoImages.filter(path=>relativeDeathPath(path)!==relativeDeathPath(current)&&!blocked.has(relativeDeathPath(path)));
+    return choices[Math.floor(Math.random()*choices.length)]||deathWhoImages[0];
+  };
+  const swapDeathCard=(img)=>{
+    const next=nextDeathImage(img.src);
+    img.classList.add('is-changing');
+    setTimeout(()=>{img.src=next;img.classList.remove('is-changing');},250);
+  };
+
+  if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    const singleCards=[...document.querySelectorAll('.hero-card,.house-card')];
+    singleCards.forEach((img,index)=>{
+      const loop=()=>{swapDeathCard(img);setTimeout(loop,1300+Math.random()*900)};
+      setTimeout(loop,700+(index*650)+Math.random()*500);
+    });
+
+    const trio=[...document.querySelectorAll('.secondary-death-card')];
+    let trioIndex=0;
+    const cycleTrio=()=>{
+      if(trio.length){swapDeathCard(trio[trioIndex]);trioIndex=(trioIndex+1)%trio.length;}
+      setTimeout(cycleTrio,700);
+    };
+    setTimeout(cycleTrio,900);
   }
 </script>
 </body>
