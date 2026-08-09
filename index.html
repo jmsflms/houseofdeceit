@@ -36,7 +36,7 @@
     .hero-detail,.hero-buttons .button{min-width:0;min-height:56px;padding:10px 12px;border-radius:5px;font-size:1rem;font-weight:900;line-height:1.15;text-align:center;display:flex;align-items:center;justify-content:center}
     .hero-detail{background:var(--cream);color:#211524}
     .hero-buttons .button{width:100%}
-    .sound-button{position:absolute;left:max(18px,calc((100vw - var(--max))/2));top:18px;right:auto;bottom:auto;z-index:4;border:1px solid #fff;border-radius:999px;padding:10px 16px;background:rgba(0,0,0,.68);color:#fff;font-weight:800;cursor:pointer}
+    .sound-button{position:absolute;left:max(18px,calc((100vw - var(--max))/2));top:18px;right:auto;bottom:auto;z-index:4;border:2px solid #fff;border-radius:999px;padding:14px 22px;background:rgba(0,0,0,.76);color:#fff;font-size:1.05rem;font-weight:900;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.28)}
     .death-card{position:absolute;width:min(180px,25vw);aspect-ratio:747/1000;object-fit:contain;z-index:5;filter:drop-shadow(0 14px 20px rgba(0,0,0,.4))}
     .hero-card{right:max(80px,calc((100vw - var(--max))/2 + 80px));top:18%;transform:rotate(7deg)}
     .death-card-row{position:absolute;left:52%;bottom:-88px;z-index:6;display:flex;align-items:flex-start;gap:24px;pointer-events:none}
@@ -123,7 +123,7 @@
       .hero-buttons{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
       .hero-detail,.hero-buttons .button{min-height:54px;font-size:.92rem;padding:9px 7px}
       .hero-card{width:92px;top:calc((100vw * 9 / 16) - 46px);right:14px}
-      .sound-button{left:16px;top:16px}
+      .sound-button{left:16px;top:16px;padding:10px 16px;font-size:.85rem;border-width:1px}
       .death-card-row{left:24px;top:100%;bottom:auto;gap:6px}
       .secondary-death-card{width:92px}
       .experience-section{padding-top:92px;margin-top:0}
@@ -147,7 +147,7 @@
       <a href="#experience">EXPERIENCE</a>
       <a href="#price">PRICE</a>
       <a class="follow follow-link" href="https://www.instagram.com/house.of.deceit/" target="_blank" rel="noopener"><img src="assets/logos/insta-logo.png" alt="">FOLLOW</a>
-      <a class="book" href="bookings.html">BOOK</a>
+      <a class="book" href="bookings.html">CHECK DATES</a>
     </div>
   </nav>
 </header>
@@ -158,7 +158,7 @@
         <source src="assets/video/001-Hod-Hero-compressed.mp4" type="video/mp4">
       </video>
       <div class="shade"></div>
-      <button class="sound-button" id="sound-button" type="button">Sound On!</button>
+      <button class="sound-button" id="sound-button" type="button" aria-pressed="false">🔊 SOUND ON</button>
     </div>
     <img class="death-card hero-card" src="assets/death-who-cutouts/barney1.png" alt="Death Who character">
     <div class="hero-copy">
@@ -171,7 +171,7 @@
           <span class="hero-detail">Whitstable</span>
           <span class="hero-detail">1hr from London</span>
           <span class="hero-detail">Groups of 10–15</span>
-          <a class="button" href="bookings.html">SEE AVAILABLE WEEKENDS</a>
+          <a class="button" href="bookings.html">CHECK DATES</a>
         </div>
         <div class="death-card-row" aria-label="Death Who characters">
           <img class="secondary-death-card" src="assets/death-who-cutouts/barney2.png" alt="Death Who character">
@@ -236,7 +236,7 @@
     <article class="review-card"><div class="review-head"><span class="review-avatar avatar-purple"></span><div><div class="review-name">Google user</div><div class="review-date">Guest review</div></div></div><div class="review-stars">★★★★★</div><p class="review-copy">If you are trying to organise a group trip, stop searching. This is the weekend everyone will remember.</p></article>
   </div><div class="review-controls"><button class="review-arrow" id="reviews-prev" type="button">←</button><button class="review-arrow" id="reviews-next" type="button">→</button></div></div></div></section>
 
-  <section class="purple" id="price"><div class="wrap"><p class="eyebrow">The essentials</p><h2>Two nights. One unforgettable story.</h2><div class="facts"><div class="fact"><strong>£166</strong>per person</div><div class="fact"><strong>10–15</strong>standard group size</div><div class="fact"><strong>Two nights</strong>in the house</div><div class="fact"><strong>Pizza included</strong>on the first evening</div></div><p class="kicker">Choose a weekend, secure the date with one place, then bring the rest of the group in.</p><a class="button" href="bookings.html">CHECK THE DATES</a></div></section>
+  <section class="purple" id="price"><div class="wrap"><p class="eyebrow">The essentials</p><h2>Two nights. One unforgettable story.</h2><div class="facts"><div class="fact"><strong>£166</strong>per person</div><div class="fact"><strong>10–15</strong>standard group size</div><div class="fact"><strong>Two nights</strong>in the house</div><div class="fact"><strong>Pizza included</strong>on the first evening</div></div><p class="kicker">Choose a weekend, secure the date with one place, then bring the rest of the group in.</p><a class="button" href="bookings.html">CHECK DATES</a></div></section>
 
   <section class="house purple"><img class="death-card house-card" src="assets/death-who-cutouts/barney5.png" alt="Death Who character"><div class="wrap location"><div><p class="eyebrow">The first house</p><h2>Whitstable, Kent</h2><p class="kicker">House of Deceit begins in a large private house near the sea, around 15 minutes' walk from Whitstable station.</p><p>There is ample street parking nearby. Guests receive a full arrival guide before the weekend.</p><a class="follow" href="https://www.google.com/maps/search/?api=1&query=59+Northwood+Road+Whitstable+CT5+2HA" target="_blank" rel="noopener">OPEN IN GOOGLE MAPS →</a></div><img src="assets/house-photos/000 Exterior.png" alt="House of Deceit in Whitstable"></div><div class="wrap gallery" style="margin-top:28px"><img src="assets/house-photos/004 Games Room.png" alt="Games room"><img src="assets/house-photos/007 Tea Room.png" alt="Tea room"><img src="assets/house-photos/008 Trial Room.png" alt="Trial room"><img src="assets/house-photos/011 Bedroom 2.png" alt="Bedroom"><img src="assets/house-photos/019 Garden.png" alt="Garden"></div></section>
 
@@ -244,11 +244,23 @@
 
   <section class="final"><div class="wrap"><h2>Who are you bringing?</h2><p class="kicker" style="margin-left:auto;margin-right:auto">The hardest part is not surviving. It is deciding which friends to invite.</p><a class="button" href="bookings.html">BOOK YOUR WEEKEND</a><br><br><a class="follow" href="https://www.instagram.com/house.of.deceit/" target="_blank" rel="noopener">SEND THIS TO THE GROUP CHAT →</a></div></section>
 </main>
-<footer><div class="wrap foot"><div><strong>House of Deceit</strong><br>59 Northwood Road, Whitstable, Kent, CT5 2HA<br><a href="mailto:house@houseofdeceit.com">house@houseofdeceit.com</a></div><div><a href="terms.html">Booking terms</a><br><a href="privacy.html">Privacy</a><br><a href="bookings.html">Book</a></div></div></footer>
+<footer><div class="wrap foot"><div><strong>House of Deceit</strong><br>59 Northwood Road, Whitstable, Kent, CT5 2HA<br><a href="mailto:house@houseofdeceit.com">house@houseofdeceit.com</a></div><div><a href="terms.html">Booking terms</a><br><a href="privacy.html">Privacy</a><br><a href="bookings.html">Check dates</a></div></div></footer>
 <script>
   const v=document.getElementById('hero-video');
   const b=document.getElementById('sound-button');
-  b.addEventListener('click',()=>{v.muted=false;v.currentTime=0;v.play();b.hidden=true});
+  b.addEventListener('click',()=>{
+    if(v.muted){
+      v.muted=false;
+      v.currentTime=0;
+      v.play();
+      b.textContent='🔇 MUTE';
+      b.setAttribute('aria-pressed','true');
+    }else{
+      v.muted=true;
+      b.textContent='🔊 SOUND ON';
+      b.setAttribute('aria-pressed','false');
+    }
+  });
   const reviewsCarousel=document.getElementById('reviews-carousel');
   const reviewScroll=()=>Math.min(408,reviewsCarousel.clientWidth*.88);
   document.getElementById('reviews-prev').addEventListener('click',()=>reviewsCarousel.scrollBy({left:-reviewScroll(),behavior:'smooth'}));
