@@ -48,7 +48,7 @@
     .logo img{display:block;width:225px;max-height:82px;object-fit:contain}
     .links{margin-left:auto;display:flex;align-items:center;gap:18px}
     .links a{font-weight:900;font-style:italic;text-decoration:none;letter-spacing:.08em}
-    .follow{color:var(--gold)!important}
+    .follow,.contact-link{color:var(--gold)!important}
     .follow-link{display:inline-flex;align-items:center;gap:7px}
     .follow-link img{width:30px;height:30px;object-fit:contain}
     .book,.button{display:inline-block;background:var(--red);padding:13px 22px;border-radius:5px;color:#fff!important;font-weight:900;text-decoration:none}
@@ -69,6 +69,9 @@
     .hero-detail,.hero-buttons .button{min-width:0;min-height:56px;padding:10px 12px;border-radius:5px;font-size:1rem;font-weight:900;line-height:1.15;text-align:center;display:flex;align-items:center;justify-content:center}
     .hero-detail{background:var(--cream);color:#211524}
     .hero-buttons .button{width:100%}
+    .hero-buttons .button,.hero-email{grid-column:1/-1}
+    .hero-email{min-height:64px;padding:10px 14px;border:2px solid var(--gold);border-radius:5px;color:var(--gold);font-weight:900;line-height:1.25;text-align:center;text-decoration:none;display:flex;flex-direction:column;align-items:center;justify-content:center}
+    .hero-email span{color:#fff;font-size:.9rem;text-transform:none;letter-spacing:0}
     .sound-button{position:absolute;left:max(18px,calc((100vw - var(--max))/2));top:18px;right:auto;bottom:auto;z-index:4;border:2px solid #fff;border-radius:999px;padding:14px 22px;background:rgba(0,0,0,.76);color:#fff;font-size:1.05rem;font-weight:900;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.28)}
     .death-card{position:absolute;width:min(180px,25vw);aspect-ratio:747/1000;object-fit:contain;z-index:5;filter:drop-shadow(0 14px 20px rgba(0,0,0,.4))}
     .hero-card{right:max(80px,calc((100vw - var(--max))/2 + 80px));top:18%;transform:rotate(7deg)}
@@ -141,12 +144,15 @@
     .location img{width:100%;border-radius:10px}
     .final{position:relative;text-align:center;background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.78)),url('assets/event-photos/event58.png') center/cover;min-height:560px;display:grid;place-items:center}
     .final h2{font-size:clamp(3rem,8vw,7rem)}
+    .questions{text-align:center}
+    .questions .kicker{margin-left:auto;margin-right:auto;max-width:900px}
+    .email-address{display:inline-block;margin-top:10px;color:var(--gold);font-size:clamp(1.25rem,3vw,2rem);font-weight:900;overflow-wrap:anywhere}
     footer{padding:38px 0;color:var(--muted);border-top:1px solid #38223f}
     .foot{display:flex;justify-content:space-between;gap:25px;flex-wrap:wrap}
     .foot a{color:var(--gold)}
     @media(max-width:760px){
-      .links a:not(.follow):not(.book){display:none}
-      .follow{font-size:.8rem}
+      .links a:not(.contact-link):not(.book){display:none}
+      .contact-link{font-size:.72rem}
       .follow-link img{width:26px;height:26px}
       nav{min-height:78px}
       .logo img{width:112px;max-height:54px}
@@ -155,6 +161,7 @@
       .hero-copy h1{max-width:92%}
       .hero-buttons{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
       .hero-detail,.hero-buttons .button{min-height:54px;font-size:.92rem;padding:9px 7px}
+      .hero-email{font-size:.9rem}
       .hero-card{width:92px;top:calc((100vw * 9 / 16) - 46px);right:14px}
       .sound-button{left:16px;top:16px;padding:10px 16px;font-size:.85rem;border-width:1px}
       .death-card-row{left:24px;top:100%;bottom:auto;gap:6px}
@@ -180,7 +187,7 @@
       <a href="#experience">EXPERIENCE</a>
       <a href="#price">PRICE</a>
       <a href="guides.html">GUIDES</a>
-      <a class="follow follow-link" href="https://www.instagram.com/house.of.deceit/" target="_blank" rel="noopener"><img src="assets/logos/insta-logo.png" alt="">FOLLOW</a>
+      <a class="contact-link" href="mailto:house@houseofdeceit.com?subject=House%20of%20Deceit%20enquiry">EMAIL US</a>
       <a class="book" href="bookings.html">CHECK DATES</a>
     </div>
   </nav>
@@ -206,6 +213,7 @@
           <span class="hero-detail">1hr from London</span>
           <span class="hero-detail">Groups of 10–15</span>
           <a class="button" href="bookings.html">CHECK DATES</a>
+          <a class="hero-email" href="mailto:house@houseofdeceit.com?subject=House%20of%20Deceit%20enquiry">EMAIL US TO FIND OUT MORE<span>house@houseofdeceit.com</span></a>
         </div>
         <div class="death-card-row" aria-label="Death Who characters">
           <img class="secondary-death-card" src="assets/death-who-cutouts/barney2.png" alt="Death Who character">
@@ -273,6 +281,8 @@
   </div><div class="review-controls"><button class="review-arrow" id="reviews-prev" type="button">←</button><button class="review-arrow" id="reviews-next" type="button">→</button></div></div></div></section>
 
   <section class="purple" id="price"><div class="wrap"><p class="eyebrow">The essentials</p><h2>Two nights. One unforgettable story.</h2><div class="facts"><div class="fact"><strong>£166</strong>per person</div><div class="fact"><strong>10–15</strong>standard group size</div><div class="fact"><strong>Two nights</strong>in the house</div><div class="fact"><strong>Pizza included</strong>on the first evening</div></div><p class="kicker">Choose a weekend, secure the date with one place, then bring the rest of the group in.</p><a class="button" href="bookings.html">CHECK DATES</a></div></section>
+
+  <section class="questions"><div class="wrap"><p class="eyebrow">Questions before you book?</p><h2>Interested, but need to know more?</h2><p class="kicker">You do not have to decide from the website alone. Ask about dates, group size, sleeping arrangements, accessibility, food, payments—or anything else. We will answer your questions and help you decide whether House of Deceit is right for your group.</p><a class="email-address" href="mailto:house@houseofdeceit.com?subject=House%20of%20Deceit%20enquiry">house@houseofdeceit.com</a></div></section>
 
   <section class="house purple"><img class="death-card house-card" src="assets/death-who-cutouts/barney5.png" alt="Death Who character"><div class="wrap location"><div><p class="eyebrow">The first house</p><h2>Whitstable, Kent</h2><p class="kicker">House of Deceit begins in a large private house near the sea, around 15 minutes' walk from Whitstable station.</p><p>There is ample street parking nearby. Guests receive a full arrival guide before the weekend.</p><a class="follow" href="https://www.google.com/maps/search/?api=1&query=59+Northwood+Road+Whitstable+CT5+2HA" target="_blank" rel="noopener">OPEN IN GOOGLE MAPS →</a></div><img src="assets/house-photos/000 Exterior.png" alt="House of Deceit in Whitstable"></div><div class="wrap gallery" style="margin-top:28px"><img src="assets/house-photos/004 Games Room.png" alt="Games room"><img src="assets/house-photos/007 Tea Room.png" alt="Tea room"><img src="assets/house-photos/008 Trial Room.png" alt="Trial room"><img src="assets/house-photos/011 Bedroom 2.png" alt="Bedroom"><img src="assets/house-photos/019 Garden.png" alt="Garden"></div></section>
 
