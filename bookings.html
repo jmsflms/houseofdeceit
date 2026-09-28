@@ -65,10 +65,11 @@
 <script>
 const API='https://script.google.com/macros/s/AKfycbxNawMmEhahRcxid5ii09EFDbEe7QfXpF_ATkzyorO7Z5Vxx36zmg_sgB0FqtJFf_CY/exec';
 const STRIPE='https://book.stripe.com/8x228rgCq9NFaw41dm2Nq00';
-const MIN_MONTH=new Date(2026,7,1);
-const MAX_MONTH=new Date(2027,1,1);
-const MIN_DATE='2026-08-01';
-const MAX_DATE='2027-03-01';
+const now=new Date();
+const MIN_MONTH=new Date(now.getFullYear(),now.getMonth()+1,1);
+const MAX_MONTH=new Date(2027,5,1);
+const MIN_DATE=[MIN_MONTH.getFullYear(),String(MIN_MONTH.getMonth()+1).padStart(2,'0'),'01'].join('-');
+const MAX_DATE='2027-07-01';
 let stays=[],selected=null,currentMonth=null;
 const $=id=>document.getElementById(id);
 function validEmail(v){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())}
