@@ -173,9 +173,14 @@ function safeUrl(value){
 
   async function loadCurrent(){
     setStatus("Loading…");
-    const {data,error}=await supabase.from("countdowns").select("id,label,end_time,updated_at").eq("id",COUNTDOWN_ID).maybeSingle();
+    const {data,error}=await supabase.from("countdowns").select("id,label,end_time,updated_at").eq("id","main").maybeSingle();
     if(error){setStatus(error.message,false);return}
-    const current=data || (DEFAULTS[COUNTDOWN_ID] && {...DEFAULTS[COUNTDOWN_ID],label:JSON.stringify({version:1,...defaultSettings})});
+    let documentSettings;
+    try{documentSettings=JSON.parse(data?.label)}catch{}
+    const group=COUNTDOWN_ID==="main"
+      ? (data && {...data,label:documentSettings?.version===2?documentSettings.message:data.label})
+      : documentSettings?.version===2?documentSettings.groups?.[COUNTDOWN_ID]:null;
+    const current=group || (DEFAULTS[COUNTDOWN_ID] && {...DEFAULTS[COUNTDOWN_ID],label:JSON.stringify({version:1,...defaultSettings})});
     if(!current){setStatus("No countdown has been saved yet.",false);return}
     const settings=decodeSettings(current.label);
     $("label").value=settings.message;
@@ -204,14 +209,28 @@ function safeUrl(value){
     if(COUNTDOWN_ID!=="main" && ctaText && !ctaUrl){setStatus("Enter a valid http or https button link.",false);return}
     $("save").disabled=true;
     setStatus("Saving…");
-    const {error}=await supabase.from("countdowns").upsert({
-      id:COUNTDOWN_ID,
-      label:COUNTDOWN_ID==="main"?$("label").value.trim():JSON.stringify({version:1,message:$("label").value.trim(),ctaText,ctaUrl}),
-      end_time:endTime.toISOString(),
-      updated_at:new Date().toISOString()
-    },{onConflict:"id"});
+    const {data:base,error:readError}=await supabase.from("countdowns").select("*").eq("id","main").maybeSingle();
+    if(readError || !base){$("save").disabled=false;setStatus(readError?.message || "Could not load the saved countdown.",false);return}
+    let documentSettings;
+    try{documentSettings=JSON.parse(base.label)}catch{}
+    if(documentSettings?.version!==2) documentSettings={version:2,message:base.label || "",groups:{}};
+    const patch={updated_at:new Date().toISOString()};
+    if(COUNTDOWN_ID==="main"){
+      documentSettings.message=$("label").value.trim();
+      patch.end_time=endTime.toISOString();
+    }else{
+      documentSettings.groups={...documentSettings.groups,[COUNTDOWN_ID]:{
+        end_time:endTime.toISOString(),
+        label:JSON.stringify({version:1,message:$("label").value.trim(),ctaText,ctaUrl})
+      }};
+    }
+    patch.label=JSON.stringify(documentSettings);
+    let query=supabase.from("countdowns").update(patch).eq("id","main");
+    query=base.updated_at?query.eq("updated_at",base.updated_at):query.is("updated_at",null);
+    const {data:saved,error}=await query.select("id");
     $("save").disabled=false;
     if(error)setStatus(error.message,false);
+    else if(!saved?.length)setStatus("Another update was made. Load current and save again.",false);
     else setStatus("Saved. The public countdown is now updated.");
   }
 

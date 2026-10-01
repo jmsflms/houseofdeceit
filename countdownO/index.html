@@ -241,6 +241,15 @@ function start(){
 
 
 function applyData(data){
+  let documentSettings;
+  try{documentSettings=JSON.parse(data.label)}catch{}
+  if(documentSettings?.version===2){
+    data=COUNTDOWN_ID==="main"
+      ? {...data,label:documentSettings.message}
+      : (documentSettings.groups?.[COUNTDOWN_ID] || {...DEFAULTS[COUNTDOWN_ID],label:JSON.stringify({version:1,...defaultSettings})});
+  }else if(COUNTDOWN_ID!=="main"){
+    data={...DEFAULTS[COUNTDOWN_ID],label:JSON.stringify({version:1,...defaultSettings})};
+  }
   const settings=decodeSettings(data.label);
   endTime=data.end_time;
   labelEl.textContent=settings.message;
@@ -258,7 +267,7 @@ async function load(){
   const { data } = await supabase
     .from("countdowns")
     .select("*")
-    .eq("id",COUNTDOWN_ID)
+    .eq("id","main")
     .maybeSingle()
 
   if(data) applyData(data)
@@ -271,7 +280,7 @@ supabase
   .channel(`countdown-live-${COUNTDOWN_ID}`)
   .on(
     "postgres_changes",
-    { event:"*", schema:"public", table:"countdowns", filter:`id=eq.${COUNTDOWN_ID}` },
+    { event:"*", schema:"public", table:"countdowns", filter:"id=eq.main" },
     payload => {
       if(payload.new?.end_time) applyData(payload.new)
     }
