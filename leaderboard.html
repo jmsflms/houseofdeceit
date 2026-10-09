@@ -1,0 +1,35 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>House of Deceit Leader Board</title>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:24px;background:#000;color:white;font-family:Arial,sans-serif}.wrap{max-width:900px;margin:auto}h1{font-size:clamp(26px,5vw,44px)}.leader-row{display:grid;grid-template-columns:65px 1fr 100px;gap:12px;align-items:center;background:#151515;border-radius:8px;margin:10px 0;padding:16px;font-size:clamp(18px,3vw,27px)}.leader-row.top{background:#b90000;font-weight:bold}.score{text-align:right}#status{font-size:13px;color:#aaa;margin-top:20px}.empty{color:#aaa;padding:16px 0}
+</style></head><body><main class="wrap"><h1>House of Deceit Leader Board</h1><h2>Leaderboard</h2><div id="leaderboard"></div><p id="status" aria-live="polite">Connecting…</p></main>
+<script type="module">import{createClient}from"https://esm.sh/@supabase/supabase-js@2";
+const URL="https://hhyfixoxwxmzncosmcqo.supabase.co";
+const KEY="sb_publishable_KWvHkZqW2aAipujklitrdg_C7bSBFce";
+const db=createClient(URL,KEY);
+const ROW="leaderboard";
+async function readBoard(){
+ const {data,error}=await db.from("countdowns").select("label,updated_at").eq("id",ROW).maybeSingle();
+ if(error)throw error;
+ if(!data||!data.label)return {players:[],updated:null};
+ let parsed=JSON.parse(data.label);
+ if(!Array.isArray(parsed))throw Error("Unexpected leaderboard data");
+ return {players:parsed.filter(p=>p&&typeof p.name==="string").map(p=>({name:p.name.slice(0,80),score:Number(p.score)||0})),updated:data.updated_at};
+}
+const board=document.getElementById("leaderboard"),status=document.getElementById("status");
+let last="";
+async function refresh(){
+ try{
+ const {players,updated}=await readBoard();
+ const signature=JSON.stringify(players);
+ if(last!==signature){
+ last=signature;board.replaceChildren();
+ players.sort((a,b)=>b.score-a.score);
+ if(!players.length){const e=document.createElement("p");e.className="empty";e.textContent="No scores yet.";board.append(e);}
+ players.forEach((p,i)=>{let row=document.createElement("div");row.className="leader-row"+(i===0?" top":"");
+ for(const [cls,t] of [["rank","#"+(i+1)],["name",p.name],["score",String(p.score)]]){const d=document.createElement("div");d.className=cls;d.textContent=t;row.append(d);}board.append(row);});
+ }
+ status.textContent=updated?"Live · Last saved "+new Date(updated).toLocaleTimeString():"Live · Awaiting results";
+ }catch(e){status.textContent="Connection error: "+e.message;}
+}
+refresh();setInterval(refresh,2000);
+</script></body></html>
