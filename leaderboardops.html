@@ -1,0 +1,38 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Leaderboard Controller</title>
+<style>*{box-sizing:border-box}body{margin:0;padding:16px;font-family:Arial,sans-serif;background:#f7f7f7;color:#111}main{max-width:700px;margin:auto}h1{font-size:26px}.row{display:grid;grid-template-columns:36px 1fr 100px;gap:8px;align-items:center;margin-bottom:8px}.row input{font-size:16px;padding:11px;min-width:0;width:100%;border:1px solid #bbb;border-radius:6px}button{font-size:16px;padding:12px 18px;margin:12px 8px 12px 0;border-radius:7px;border:0;background:#111;color:#fff;cursor:pointer}button:disabled{opacity:.5}#status{font-size:14px;min-height:22px}a{color:#222}</style></head><body><main>
+<h1>Leaderboard Controller</h1><p>Enter names and scores, then press Save. The public leaderboard updates automatically.</p><div class="row"><strong>#</strong><strong>Name</strong><strong>Score</strong></div><div id="entries"></div>
+<button id="save">Save / Update</button><button id="reload" type="button">Load current</button>
+<p id="status" role="status">Loading…</p><p><a href="leaderboard.html" target="_blank" rel="noopener">Open public leaderboard ↗</a></p></main>
+<script type="module">import{createClient}from"https://esm.sh/@supabase/supabase-js@2";
+const URL="https://hhyfixoxwxmzncosmcqo.supabase.co";
+const KEY="sb_publishable_KWvHkZqW2aAipujklitrdg_C7bSBFce";
+const db=createClient(URL,KEY);
+const ROW="leaderboard";
+async function readBoard(){
+ const {data,error}=await db.from("countdowns").select("label,updated_at").eq("id",ROW).maybeSingle();
+ if(error)throw error;
+ if(!data||!data.label)return {players:[],updated:null};
+ let parsed=JSON.parse(data.label);
+ if(!Array.isArray(parsed))throw Error("Unexpected leaderboard data");
+ return {players:parsed.filter(p=>p&&typeof p.name==="string").map(p=>({name:p.name.slice(0,80),score:Number(p.score)||0})),updated:data.updated_at};
+}
+const list=document.getElementById("entries"),status=document.getElementById("status"),save=document.getElementById("save");
+for(let i=0;i<15;i++){const row=document.createElement("div");row.className="row";const num=document.createElement("span");num.textContent=(i+1)+".";const name=document.createElement("input");name.placeholder="Player name";name.maxLength=80;name.dataset.kind="name";const score=document.createElement("input");score.type="number";score.step="any";score.value="0";score.dataset.kind="score";row.append(num,name,score);list.append(row);}
+const names=[...document.querySelectorAll('[data-kind="name"]')],scores=[...document.querySelectorAll('[data-kind="score"]')];
+let dirty=false;[...names,...scores].forEach(el=>el.addEventListener("input",()=>{dirty=true;status.textContent="Unsaved changes";}));
+async function load(){
+ if(dirty&&!confirm("Discard unsaved changes and load saved scores?"))return;
+ try{const {players}=await readBoard();names.forEach((el,i)=>{el.value=players[i]?.name||"";scores[i].value=players[i]?.score??0;});dirty=false;status.textContent="Current scores loaded.";}catch(e){status.textContent="Load failed: "+e.message;}
+}
+async function saveBoard(){
+ save.disabled=true;status.textContent="Saving…";
+ try{
+ const players=names.map((el,i)=>({name:el.value.trim(),score:Number(scores[i].value)||0})).filter(p=>p.name);
+ const payload={id:ROW,label:JSON.stringify(players),end_time:"2099-01-01T00:00:00.000Z",updated_at:new Date().toISOString()};
+ const {error}=await db.from("countdowns").upsert(payload,{onConflict:"id"});
+ if(error)throw error;
+ dirty=false;status.textContent="Saved. Public leaderboard will update within 2 seconds.";
+ }catch(e){status.textContent="Save failed: "+e.message;}finally{save.disabled=false;}
+}
+save.addEventListener("click",saveBoard);document.getElementById("reload").addEventListener("click",load);window.addEventListener("beforeunload",e=>{if(dirty){e.preventDefault();e.returnValue="";}});load();
+</script></body></html>
