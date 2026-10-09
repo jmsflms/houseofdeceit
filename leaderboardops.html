@@ -29,7 +29,7 @@ async function saveBoard(){
  try{
  const players=names.map((el,i)=>({name:el.value.trim(),score:Number(scores[i].value)||0})).filter(p=>p.name);
  const payload={id:ROW,label:JSON.stringify(players),end_time:"2099-01-01T00:00:00.000Z",updated_at:new Date().toISOString()};
- const {error}=await db.from("countdowns").upsert(payload,{onConflict:"id"});
+ const {error}=await db.from("countdowns").update({label:payload.label,updated_at:payload.updated_at}).eq("id",ROW).select("id");
  if(error)throw error;
  dirty=false;status.textContent="Saved. Public leaderboard will update within 2 seconds.";
  }catch(e){status.textContent="Save failed: "+e.message;}finally{save.disabled=false;}
