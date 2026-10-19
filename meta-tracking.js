@@ -1,7 +1,16 @@
-/* House of Deceit: optional Meta measurement, separate from email consent. */
+/* House of Deceit: optional Meta and Google Analytics measurement, separate from email consent. */
 (function () {
   'use strict';
   if (window.HODTracking) return;
+  const GA_ID = 'G-RZGX9SX1GP';
+  const ANALYTICS_KEY = 'hod-analytics-consent-v1';
+  const GA_LEAD_KEY = 'hod-ga-lead-session-v1';
+  const ANALYTICS_PAGE = location.pathname !== '/privacy.html';
+  let analyticsChoice = readChoice(ANALYTICS_KEY);
+  let analyticsInitialised = false;
+  let analyticsPageSent = false;
+  let analyticsPendingLead = false;
+  let analyticsLeadSent = false;
   const PIXEL_ID = '897956483285845';
   const MEASURE_PAGE = ['/', '/index.html', '/bookings.html'].includes(location.pathname);
   const CONSENT_KEY = 'hod-advertising-consent-v1';
@@ -14,12 +23,66 @@
   let leadSent = false;
   let returnFocus = null;
 
-  function readChoice() {
+  function readChoice(key) {
     try {
-      const saved = JSON.parse(localStorage.getItem(CONSENT_KEY));
+      const saved = JSON.parse(localStorage.getItem(key || CONSENT_KEY));
       if (saved && saved.expires > Date.now() && ['accepted', 'rejected'].includes(saved.choice)) return saved.choice;
     } catch (_) {}
     return null;
+  }
+  function analyticsLead() {
+    if (analyticsChoice !== 'accepted' || !analyticsInitialised || !analyticsPendingLead || analyticsLeadSent) return;
+    try { if (sessionStorage.getItem(GA_LEAD_KEY) === 'sent') return; } catch (_) {}
+    window.gtag('event', 'generate_lead', {send_to: GA_ID, lead_source: 'Availability calendar'});
+    analyticsLeadSent = true;
+    analyticsPendingLead = false;
+    try { sessionStorage.setItem(GA_LEAD_KEY, 'sent'); } catch (_) {}
+  }
+  function startAnalytics() {
+    if (analyticsChoice !== 'accepted' || !ANALYTICS_PAGE) return;
+    try {
+      window['ga-disable-' + GA_ID] = false;
+      if (!analyticsInitialised) {
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+        window.gtag('consent', 'default', {analytics_storage: 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied'});
+        window.gtag('consent', 'update', {analytics_storage: 'granted'});
+        window.gtag('js', new Date());
+        window.gtag('config', GA_ID, {send_page_view: false, allow_google_signals: false, allow_ad_personalization_signals: false, page_location: location.origin + location.pathname + safeCampaignQuery()});
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+        document.head.appendChild(script);
+        analyticsInitialised = true;
+      } else window.gtag('consent', 'update', {analytics_storage: 'granted'});
+      if (!analyticsPageSent) {
+        window.gtag('event', 'page_view', {send_to: GA_ID});
+        analyticsPageSent = true;
+      }
+      analyticsLead();
+    } catch (_) { /* Analytics must never interrupt a booking. */ }
+  }
+  function safeCampaignQuery() {
+    // Keep campaign labels for reporting, never email or booking query parameters.
+    const input = new URLSearchParams(location.search);
+    const output = new URLSearchParams();
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach(function (key) {
+      const value = input.get(key);
+      if (value && !value.includes('@')) output.set(key, value.slice(0, 200));
+    });
+    return output.size ? '?' + output.toString() : '';
+  }
+  function stopAnalytics() {
+    window['ga-disable-' + GA_ID] = true;
+    if (window.gtag) window.gtag('consent', 'update', {analytics_storage: 'denied'});
+    document.cookie.split(';').forEach(function (cookie) {
+      const name = cookie.split('=')[0].trim();
+      if (!/^_ga(?:_|$)|^_gid$|^_gat/.test(name)) return;
+      ['', '; domain=' + location.hostname, '; domain=.houseofdeceit.com'].forEach(function (domain) {
+        document.cookie = name + '=; Max-Age=0; path=/' + domain + '; SameSite=Lax; Secure';
+      });
+    });
+    analyticsPendingLead = false;
   }
   function hasLead() {
     try { return sessionStorage.getItem(LEAD_KEY) === 'sent'; } catch (_) { return false; }
@@ -70,7 +133,10 @@
     });
     pendingLead = false;
   }
-  function choose(next) {
+  function choose(next, analyticsNext) {
+    analyticsChoice = analyticsNext || next;
+    try { localStorage.setItem(ANALYTICS_KEY, JSON.stringify({choice: analyticsChoice, expires: Date.now() + SIX_MONTHS})); } catch (_) {}
+    if (analyticsChoice === 'accepted') startAnalytics(); else stopAnalytics();
     choice = next;
     try { localStorage.setItem(CONSENT_KEY, JSON.stringify({choice: next, expires: Date.now() + SIX_MONTHS})); } catch (_) {}
     banner.hidden = true;
@@ -79,6 +145,8 @@
   }
   function openSettings() {
     returnFocus = document.activeElement;
+    banner.querySelector('[data-preference=analytics]').checked = analyticsChoice === 'accepted';
+    banner.querySelector('[data-preference=advertising]').checked = choice === 'accepted';
     banner.hidden = false;
     banner.querySelector('button').focus();
   }
@@ -89,11 +157,16 @@
   const banner = document.createElement('section');
   banner.id = 'hod-cookie-banner';
   banner.setAttribute('role', 'region');
-  banner.setAttribute('aria-label', 'Advertising cookie choice');
-  banner.hidden = choice !== null;
-  banner.innerHTML = '<p><strong>Advertising cookies</strong><br>With your permission, we use Meta cookies to measure which ads lead to visits and email sign-ups. You can book and view dates if you reject them. <a href="privacy.html">Privacy notice</a></p><div class="hod-cookie-actions"><button type="button" data-choice="accepted">Accept</button><button type="button" data-choice="rejected">Reject</button></div>';
+  banner.setAttribute('aria-label', 'Cookie choices');
+  banner.hidden = choice !== null && analyticsChoice !== null;
+  banner.innerHTML = '<p><strong>Optional cookies</strong><br>Google Analytics measures website visits and successful sign-ups. Meta measures advertising visits and sign-ups. You can view dates and book if you reject both. <a href="privacy.html">Privacy notice</a></p><p><label><input type="checkbox" data-preference="analytics"> Website statistics (Google Analytics)</label><br><label><input type="checkbox" data-preference="advertising"> Advertising (Meta)</label></p><div class="hod-cookie-actions"><button type="button" data-choice="accepted">Accept all</button><button type="button" data-choice="rejected">Reject all</button><button type="button" data-save-preferences>Save choices</button></div>';
+  banner.querySelector('[data-preference=analytics]').checked = analyticsChoice === 'accepted';
+  banner.querySelector('[data-preference=advertising]').checked = choice === 'accepted';
   banner.querySelectorAll('[data-choice]').forEach(function (button) {
     button.addEventListener('click', function () { choose(button.getAttribute('data-choice')); });
+  });
+  banner.querySelector('[data-save-preferences]').addEventListener('click', function () {
+    choose(banner.querySelector('[data-preference=advertising]').checked ? 'accepted' : 'rejected', banner.querySelector('[data-preference=analytics]').checked ? 'accepted' : 'rejected');
   });
   document.body.appendChild(banner);
   const settings = document.createElement('button');
@@ -107,15 +180,21 @@
 
   window.HODTracking = {
     // Called only after saveLead succeeds AND the date calendar loads.
-    lead: function () { if (choice === 'rejected') return; pendingLead = true; sendLead(); },
+    lead: function () {
+      if (analyticsChoice !== 'rejected') { analyticsPendingLead = true; analyticsLead(); }
+      if (choice !== 'rejected') { pendingLead = true; sendLead(); }
+    },
     openSettings: openSettings
   };
   // Apply preference changes made in another tab, including withdrawal.
   window.addEventListener('storage', function (event) {
-    if (event.key !== CONSENT_KEY) return;
+    if (event.key !== CONSENT_KEY && event.key !== ANALYTICS_KEY && event.key !== null) return;
+    analyticsChoice = readChoice(ANALYTICS_KEY);
+    if (analyticsChoice === 'accepted') startAnalytics(); else stopAnalytics();
     choice = readChoice();
-    banner.hidden = choice !== null;
+    banner.hidden = choice !== null && analyticsChoice !== null;
     if (choice === 'accepted') startPixel(); else stopPixel();
   });
   if (choice === 'accepted') startPixel(); else stopPixel();
+  if (analyticsChoice === 'accepted') startAnalytics(); else stopAnalytics();
 })();
