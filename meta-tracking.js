@@ -145,8 +145,6 @@
   }
   function openSettings() {
     returnFocus = document.activeElement;
-    banner.querySelector('[data-preference=analytics]').checked = analyticsChoice === 'accepted';
-    banner.querySelector('[data-preference=advertising]').checked = choice === 'accepted';
     banner.hidden = false;
     banner.querySelector('button').focus();
   }
@@ -159,14 +157,9 @@
   banner.setAttribute('role', 'region');
   banner.setAttribute('aria-label', 'Cookie choices');
   banner.hidden = choice !== null && analyticsChoice !== null;
-  banner.innerHTML = '<p><strong>Optional cookies</strong><br>Google Analytics measures website visits and successful sign-ups. Meta measures advertising visits and sign-ups. You can view dates and book if you reject both. <a href="privacy.html">Privacy notice</a></p><p><label><input type="checkbox" data-preference="analytics"> Website statistics (Google Analytics)</label><br><label><input type="checkbox" data-preference="advertising"> Advertising (Meta)</label></p><div class="hod-cookie-actions"><button type="button" data-choice="accepted">Accept all</button><button type="button" data-choice="rejected">Reject all</button><button type="button" data-save-preferences>Save choices</button></div>';
-  banner.querySelector('[data-preference=analytics]').checked = analyticsChoice === 'accepted';
-  banner.querySelector('[data-preference=advertising]').checked = choice === 'accepted';
+  banner.innerHTML = '<p><strong>Optional cookies</strong><br>Google Analytics measures website visits and successful sign-ups. Meta measures advertising visits and sign-ups. You can view dates and book if you reject both. <a href="privacy.html">Privacy notice</a></p><div class="hod-cookie-actions"><button type="button" data-choice="accepted">Accept all</button><button type="button" data-choice="rejected">Reject all</button></div>';
   banner.querySelectorAll('[data-choice]').forEach(function (button) {
     button.addEventListener('click', function () { choose(button.getAttribute('data-choice')); });
-  });
-  banner.querySelector('[data-save-preferences]').addEventListener('click', function () {
-    choose(banner.querySelector('[data-preference=advertising]').checked ? 'accepted' : 'rejected', banner.querySelector('[data-preference=analytics]').checked ? 'accepted' : 'rejected');
   });
   document.body.appendChild(banner);
   const settings = document.createElement('button');
