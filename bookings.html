@@ -86,7 +86,7 @@ const MAX_MONTH=new Date(2027,5,1);
 const MIN_DATE=[MIN_MONTH.getFullYear(),String(MIN_MONTH.getMonth()+1).padStart(2,'0'),'01'].join('-');
 const MAX_DATE='2027-07-01';
 // Confirmed sold-out start dates, even if the availability feed has not caught up.
-const SOLD_OUT_START_DATES=new Set();
+const SOLD_OUT_START_DATES=new Set(['2026-12-29']);
 let stays=[],selected=null,currentMonth=null;
 const $=id=>document.getElementById(id);
 function validEmail(v){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())}
