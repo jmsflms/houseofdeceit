@@ -237,8 +237,11 @@
     }
     .eyes-strip{position:absolute;left:-30px;top:-25px;width:min(560px,72vw);opacity:.32;z-index:-1;pointer-events:none}
     .mosaic{display:flex;flex-direction:column;gap:10px;width:100%;max-width:500px;margin-left:auto}
-    .mosaic img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:8px;transition:opacity .35s ease}
-    .mosaic img.is-changing{opacity:0}
+    .mosaic-frame{position:relative;aspect-ratio:16/9;overflow:hidden;border-radius:8px;background:#160e1b}
+    .mosaic .mosaic-frame img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;border-radius:8px}
+    .mosaic .mosaic-incoming{opacity:0;transition:opacity 2.4s ease-in-out}
+    .mosaic .mosaic-incoming.is-visible{opacity:1}
+    @media(prefers-reduced-motion:reduce){.mosaic .mosaic-incoming{transition:none}}
     .bigline{font:900 clamp(2.6rem,6vw,5.8rem)/.95 Georgia,serif;margin:0}
     .chips{display:flex;flex-wrap:wrap;gap:10px;margin:24px 0}
     .chip{padding:10px 14px;border:1px solid rgba(228,180,90,.45);border-radius:999px;font-weight:800}
@@ -461,9 +464,62 @@
   document.getElementById('reviews-prev').addEventListener('click',()=>reviewsCarousel.scrollBy({left:-reviewScroll(),behavior:'smooth'}));
   document.getElementById('reviews-next').addEventListener('click',()=>reviewsCarousel.scrollBy({left:reviewScroll(),behavior:'smooth'}));
 
-  const reactionImages=['assets/reactions/reaction2.png','assets/reactions/reaction3.png','assets/reactions/reaction4.png','assets/reactions/reaction6.png','assets/reactions/reaction7.png','assets/reactions/reaction8.png','assets/reactions/reaction9.png','assets/reactions/reaction10.png','assets/reactions/reaction11.png','assets/reactions/reaction12.png','assets/event-photos/event3.png','assets/event-photos/event4.png','assets/event-photos/event7.png','assets/event-photos/event12.png','assets/event-photos/event16.png','assets/event-photos/event17.png','assets/event-photos/event19.png','assets/event-photos/event20.png','assets/event-photos/event27.png','assets/event-photos/event28.png','assets/event-photos/event29.png','assets/event-photos/event31.png','assets/event-photos/event32.png','assets/event-photos/event33.png','assets/event-photos/event34.png','assets/event-photos/event37.png','assets/event-photos/event38.png','assets/event-photos/event40.png','assets/event-photos/event41.png','assets/event-photos/event42.png','assets/event-photos/event43.png','assets/event-photos/event44.png','assets/event-photos/event45.png','assets/event-photos/event46.png','assets/event-photos/event47.png','assets/event-photos/event48.png','assets/event-photos/event49.png','assets/event-photos/event50.png','assets/event-photos/event51.png','assets/event-photos/event52.png','assets/event-photos/event53.png','assets/event-photos/event55.png','assets/event-photos/event56.png','assets/event-photos/event57.png','assets/event-photos/event58.png','assets/event-photos/event59.png','assets/event-photos/event60.png','assets/event-photos/event70.png','assets/event-photos/event71.png','assets/event-photos/event72.png','assets/event-photos/event73.png','assets/event-photos/event74.jpeg','assets/house-photos/000 Exterior.png','assets/house-photos/004 Games Room.png','assets/house-photos/007 Tea Room.png','assets/house-photos/008 Trial Room.png','assets/house-photos/011 Bedroom 2.png','assets/house-photos/014 Bedroom 1.png','assets/house-photos/017 Bedroom 3.png','assets/house-photos/019 Garden.png'];
+  const reactionImages=['assets/reactions/reaction2.png','assets/reactions/reaction3.png','assets/reactions/reaction4.png','assets/reactions/reaction6.png','assets/reactions/reaction7.png','assets/reactions/reaction8.png','assets/reactions/reaction9.png','assets/reactions/reaction10.png','assets/reactions/reaction11.png','assets/reactions/reaction12.png','assets/event-photos/event3.png','assets/event-photos/event4.png','assets/event-photos/event7.png','assets/event-photos/event12.png','assets/event-photos/event16.png','assets/event-photos/event17.png','assets/event-photos/event19.png','assets/event-photos/event20.png','assets/event-photos/event27.png','assets/event-photos/event28.png','assets/event-photos/event29.png','assets/event-photos/event31.png','assets/event-photos/event32.png','assets/event-photos/event33.png','assets/event-photos/event34.png','assets/event-photos/event37.png','assets/event-photos/event38.png','assets/event-photos/event40.png','assets/event-photos/event41.png','assets/event-photos/event42.png','assets/event-photos/event43.png','assets/event-photos/event44.png','assets/event-photos/event45.png','assets/event-photos/event46.png','assets/event-photos/event47.png','assets/event-photos/event48.png','assets/event-photos/event49.png','assets/event-photos/event50.png','assets/event-photos/event51.png','assets/event-photos/event52.png','assets/event-photos/event53.png','assets/event-photos/event55.png','assets/event-photos/event56.png','assets/event-photos/event57.png','assets/event-photos/event58.png','assets/event-photos/event60.png','assets/event-photos/event70.png','assets/event-photos/event71.png','assets/event-photos/event72.png','assets/event-photos/event73.png','assets/event-photos/event74.jpeg','assets/house-photos/000 Exterior.png','assets/house-photos/004 Games Room.png','assets/house-photos/007 Tea Room.png','assets/house-photos/008 Trial Room.png','assets/house-photos/011 Bedroom 2.png','assets/house-photos/014 Bedroom 1.png','assets/house-photos/017 Bedroom 3.png','assets/house-photos/019 Garden.png'];
   const reactionSlots=[...document.querySelectorAll('#reaction-stack img')];
-  if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){reactionSlots.forEach((img,index)=>{let imageIndex=index*3;const changeReaction=()=>{imageIndex=(imageIndex+1+Math.floor(Math.random()*(reactionImages.length-1)))%reactionImages.length;img.classList.add('is-changing');setTimeout(()=>{img.src=reactionImages[imageIndex];img.classList.remove('is-changing');setTimeout(changeReaction,700+Math.random()*600)},180)};setTimeout(changeReaction,300+(index*230)+Math.random()*350)})}
+  const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
+  const failedReactions=new Set();
+  const reactionPath=img=>img.getAttribute('src');
+  const reactionFrames=reactionSlots.map(img=>{
+    const frame=document.createElement('div');
+    frame.className='mosaic-frame';
+    img.before(frame);
+    frame.append(img);
+    return frame;
+  });
+  const loadReaction=path=>new Promise((resolve,reject)=>{
+    const img=new Image();
+    img.alt='';
+    img.setAttribute('aria-hidden','true');
+    img.onload=async()=>{
+      try{if(img.decode)await img.decode();resolve(img)}catch(error){reject(error)}
+    };
+    img.onerror=reject;
+    img.src=path;
+  });
+  let reactionIndex=0;
+  async function changeReaction(){
+    if(document.hidden||reducedMotion.matches)return;
+    const frame=reactionFrames[reactionIndex];
+    if(!frame)return;
+    const bounds=frame.parentElement.getBoundingClientRect();
+    if(bounds.bottom<0||bounds.top>window.innerHeight)return;
+    const used=new Set(reactionFrames.map(item=>reactionPath(item.firstElementChild)));
+    const choices=reactionImages.filter(path=>!used.has(path)&&!failedReactions.has(path));
+    // Keep the current photo visible if any replacement fails to load.
+    while(choices.length){
+      const choice=choices.splice(Math.floor(Math.random()*choices.length),1)[0];
+      try{
+        const incoming=await loadReaction(choice);
+        if(document.hidden||reducedMotion.matches)return;
+        const current=frame.firstElementChild;
+        incoming.className='mosaic-incoming';
+        frame.append(incoming);
+        await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+        incoming.classList.add('is-visible');
+        await new Promise(resolve=>setTimeout(resolve,2500));
+        incoming.alt=current.alt;
+        incoming.removeAttribute('aria-hidden');
+        current.remove();
+        incoming.className='';
+        reactionIndex=(reactionIndex+1)%reactionFrames.length;
+        return;
+      }catch(error){failedReactions.add(choice)}
+    }
+  }
+  async function cycleReactions(){
+    try{await changeReaction()}finally{setTimeout(cycleReactions,6000)}
+  }
+  setTimeout(cycleReactions,6000);
 
   const deathWhoImages=[...Array.from({length:12},(_,i)=>`assets/death-who-cutouts/barney${i+1}.png`),'assets/death-who-cutouts/Barney13.png','assets/death-who-cutouts/Barney14.png','assets/death-who-cutouts/barney15.png',...Array.from({length:15},(_,i)=>`assets/death-who-cutouts/David${i+1}.png`),...Array.from({length:11},(_,i)=>`assets/death-who-cutouts/Kate${i+1}.png`),...Array.from({length:12},(_,i)=>`assets/death-who-cutouts/Melody${i+1}.png`)];
   const allDeathSlots=[...document.querySelectorAll('.hero-card,.house-card,.secondary-death-card')];
