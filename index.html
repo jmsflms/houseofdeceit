@@ -237,11 +237,13 @@
     }
     .eyes-strip{position:absolute;left:-30px;top:-25px;width:min(560px,72vw);opacity:.32;z-index:-1;pointer-events:none}
     .mosaic{display:flex;flex-direction:column;gap:10px;width:100%;max-width:500px;margin-left:auto}
-    .mosaic-frame{position:relative;aspect-ratio:16/9;overflow:hidden;border-radius:8px;background:#160e1b}
-    .mosaic .mosaic-frame img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;border-radius:8px}
-    .mosaic .mosaic-incoming{opacity:0;transition:opacity 2.4s ease-in-out}
-    .mosaic .mosaic-incoming.is-visible{opacity:1}
-    @media(prefers-reduced-motion:reduce){.mosaic .mosaic-incoming{transition:none}}
+    .mosaic-photo{position:relative;aspect-ratio:16/9;overflow:hidden;border-radius:8px;background:#17121b}
+    .mosaic .mosaic-photo img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;border-radius:8px}
+    .mosaic .incoming{opacity:0;transition:opacity 2s ease-in-out}
+    .mosaic .incoming.is-visible{opacity:1}
+    .slideshow-toggle{align-self:flex-end;border:1px solid #796880;border-radius:5px;background:transparent;color:var(--cream);padding:7px 12px;font:inherit;font-size:.85rem;cursor:pointer}
+    .slideshow-toggle:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+    @media(prefers-reduced-motion:reduce){.mosaic .incoming{transition:none}}
     .bigline{font:900 clamp(2.6rem,6vw,5.8rem)/.95 Georgia,serif;margin:0}
     .chips{display:flex;flex-wrap:wrap;gap:10px;margin:24px 0}
     .chip{padding:10px 14px;border:1px solid rgba(228,180,90,.45);border-radius:999px;font-weight:800}
@@ -394,9 +396,9 @@
         <section class="day-card"><h3>DAY 3</h3><p class="rules-note">The losing team, Killers or Innocents, faces its punishment. You are then free to leave.</p></section>
       </div>
       <div class="mosaic" id="reaction-stack">
-        <img src="assets/reactions/reaction2.png" alt="Guests reacting during House of Deceit">
-        <img src="assets/reactions/reaction4.png" alt="Guests reacting during House of Deceit">
-        <img src="assets/reactions/reaction7.png" alt="Guests reacting during House of Deceit">
+        <div class="mosaic-photo"><img src="assets/slideshow/reaction2.jpg" alt="Guests reacting during House of Deceit" width="1000" height="563" loading="lazy" decoding="async"></div>
+        <div class="mosaic-photo"><img src="assets/slideshow/reaction4.jpg" alt="Guests reacting during House of Deceit" width="1000" height="563" loading="lazy" decoding="async"></div>
+        <div class="mosaic-photo"><img src="assets/slideshow/reaction7.jpg" alt="Guests reacting during House of Deceit" width="1000" height="563" loading="lazy" decoding="async"></div>
       </div>
     </div>
   </section>
@@ -464,62 +466,91 @@
   document.getElementById('reviews-prev').addEventListener('click',()=>reviewsCarousel.scrollBy({left:-reviewScroll(),behavior:'smooth'}));
   document.getElementById('reviews-next').addEventListener('click',()=>reviewsCarousel.scrollBy({left:reviewScroll(),behavior:'smooth'}));
 
-  const reactionImages=['assets/reactions/reaction2.png','assets/reactions/reaction3.png','assets/reactions/reaction4.png','assets/reactions/reaction6.png','assets/reactions/reaction7.png','assets/reactions/reaction8.png','assets/reactions/reaction9.png','assets/reactions/reaction10.png','assets/reactions/reaction11.png','assets/reactions/reaction12.png','assets/event-photos/event3.png','assets/event-photos/event4.png','assets/event-photos/event7.png','assets/event-photos/event12.png','assets/event-photos/event16.png','assets/event-photos/event17.png','assets/event-photos/event19.png','assets/event-photos/event20.png','assets/event-photos/event27.png','assets/event-photos/event28.png','assets/event-photos/event29.png','assets/event-photos/event31.png','assets/event-photos/event32.png','assets/event-photos/event33.png','assets/event-photos/event34.png','assets/event-photos/event37.png','assets/event-photos/event38.png','assets/event-photos/event40.png','assets/event-photos/event41.png','assets/event-photos/event42.png','assets/event-photos/event43.png','assets/event-photos/event44.png','assets/event-photos/event45.png','assets/event-photos/event46.png','assets/event-photos/event47.png','assets/event-photos/event48.png','assets/event-photos/event49.png','assets/event-photos/event50.png','assets/event-photos/event51.png','assets/event-photos/event52.png','assets/event-photos/event53.png','assets/event-photos/event55.png','assets/event-photos/event56.png','assets/event-photos/event57.png','assets/event-photos/event58.png','assets/event-photos/event60.png','assets/event-photos/event70.png','assets/event-photos/event71.png','assets/event-photos/event72.png','assets/event-photos/event73.png','assets/event-photos/event74.jpeg','assets/house-photos/000 Exterior.png','assets/house-photos/004 Games Room.png','assets/house-photos/007 Tea Room.png','assets/house-photos/008 Trial Room.png','assets/house-photos/011 Bedroom 2.png','assets/house-photos/014 Bedroom 1.png','assets/house-photos/017 Bedroom 3.png','assets/house-photos/019 Garden.png'];
-  const reactionSlots=[...document.querySelectorAll('#reaction-stack img')];
-  const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
-  const failedReactions=new Set();
-  const reactionPath=img=>img.getAttribute('src');
-  const reactionFrames=reactionSlots.map(img=>{
-    const frame=document.createElement('div');
-    frame.className='mosaic-frame';
-    img.before(frame);
-    frame.append(img);
-    return frame;
-  });
-  const loadReaction=path=>new Promise((resolve,reject)=>{
-    const img=new Image();
-    img.alt='';
-    img.setAttribute('aria-hidden','true');
-    img.onload=async()=>{
-      try{if(img.decode)await img.decode();resolve(img)}catch(error){reject(error)}
-    };
-    img.onerror=reject;
-    img.src=path;
-  });
+  const reactionImages=["assets/slideshow/reaction2.jpg", "assets/slideshow/reaction3.jpg", "assets/slideshow/reaction4.jpg", "assets/slideshow/reaction6.jpg", "assets/slideshow/reaction7.jpg", "assets/slideshow/reaction8.jpg", "assets/slideshow/reaction9.jpg", "assets/slideshow/reaction10.jpg", "assets/slideshow/reaction11.jpg", "assets/slideshow/reaction12.jpg", "assets/slideshow/event3.jpg", "assets/slideshow/event4.jpg", "assets/slideshow/event7.jpg", "assets/slideshow/event12.jpg", "assets/slideshow/event16.jpg", "assets/slideshow/event17.jpg", "assets/slideshow/event19.jpg", "assets/slideshow/event20.jpg", "assets/slideshow/event27.jpg", "assets/slideshow/event28.jpg", "assets/slideshow/event29.jpg", "assets/slideshow/event31.jpg", "assets/slideshow/event32.jpg", "assets/slideshow/event33.jpg", "assets/slideshow/event34.jpg", "assets/slideshow/event37.jpg", "assets/slideshow/event38.jpg", "assets/slideshow/event40.jpg", "assets/slideshow/event41.jpg", "assets/slideshow/event42.jpg", "assets/slideshow/event43.jpg", "assets/slideshow/event44.jpg", "assets/slideshow/event45.jpg", "assets/slideshow/event46.jpg", "assets/slideshow/event47.jpg", "assets/slideshow/event48.jpg", "assets/slideshow/event49.jpg", "assets/slideshow/event50.jpg", "assets/slideshow/event51.jpg", "assets/slideshow/event52.jpg", "assets/slideshow/event53.jpg", "assets/slideshow/event55.jpg", "assets/slideshow/event56.jpg", "assets/slideshow/event57.jpg", "assets/slideshow/event58.jpg", "assets/slideshow/event60.jpg", "assets/slideshow/event70.jpg", "assets/slideshow/event71.jpg", "assets/slideshow/event72.jpg", "assets/slideshow/event73.jpg", "assets/slideshow/event74.jpg", "assets/slideshow/000-exterior.jpg", "assets/slideshow/004-games-room.jpg", "assets/slideshow/007-tea-room.jpg", "assets/slideshow/008-trial-room.jpg", "assets/slideshow/011-bedroom-2.jpg", "assets/slideshow/014-bedroom-1.jpg", "assets/slideshow/017-bedroom-3.jpg", "assets/slideshow/019-garden.jpg"];
+  // Keep the current photo visible until its replacement has loaded.
+  const reactionStack=document.getElementById('reaction-stack');
+  const reactionFrames=[...reactionStack.querySelectorAll('.mosaic-photo')];
+  const reactionMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
+  const unavailableReactions=new Set();
+  const pendingReactions=new Set();
+  let reactionQueue=[];
   let reactionIndex=0;
-  async function changeReaction(){
-    if(document.hidden||reducedMotion.matches)return;
-    const frame=reactionFrames[reactionIndex];
-    if(!frame)return;
-    const bounds=frame.parentElement.getBoundingClientRect();
-    if(bounds.bottom<0||bounds.top>window.innerHeight)return;
-    const used=new Set(reactionFrames.map(item=>reactionPath(item.firstElementChild)));
-    const choices=reactionImages.filter(path=>!used.has(path)&&!failedReactions.has(path));
-    // Keep the current photo visible if any replacement fails to load.
-    while(choices.length){
-      const choice=choices.splice(Math.floor(Math.random()*choices.length),1)[0];
-      try{
-        const incoming=await loadReaction(choice);
-        if(document.hidden||reducedMotion.matches)return;
-        const current=frame.firstElementChild;
-        incoming.className='mosaic-incoming';
-        frame.append(incoming);
-        await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
-        incoming.classList.add('is-visible');
-        await new Promise(resolve=>setTimeout(resolve,2500));
-        incoming.alt=current.alt;
-        incoming.removeAttribute('aria-hidden');
-        current.remove();
-        incoming.className='';
-        reactionIndex=(reactionIndex+1)%reactionFrames.length;
-        return;
-      }catch(error){failedReactions.add(choice)}
+  let reactionBusy=false;
+  let reactionPaused=false;
+  let reactionInView=false;
+  const reactionPath=img=>img.getAttribute('src');
+  const nextReaction=()=>{
+    const visible=new Set([...reactionStack.querySelectorAll('img')].map(reactionPath));
+    reactionQueue=reactionQueue.filter(path=>!visible.has(path)&&!unavailableReactions.has(path)&&!pendingReactions.has(path));
+    if(!reactionQueue.length){
+      reactionQueue=reactionImages.filter(path=>!visible.has(path)&&!unavailableReactions.has(path)&&!pendingReactions.has(path));
+      for(let i=reactionQueue.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[reactionQueue[i],reactionQueue[j]]=[reactionQueue[j],reactionQueue[i]]}
     }
-  }
-  async function cycleReactions(){
-    try{await changeReaction()}finally{setTimeout(cycleReactions,6000)}
-  }
-  setTimeout(cycleReactions,6000);
+    const index=reactionQueue.findIndex(path=>!visible.has(path)&&!unavailableReactions.has(path));
+    if(index<0)return null;
+    const path=reactionQueue.splice(index,1)[0];
+    pendingReactions.add(path);
+    return path;
+  };
+  const replaceReaction=async(frame,animate=true)=>{
+    const current=frame.querySelector('img');
+    // A failed candidate never replaces the photo already on screen.
+    for(let attempt=0;attempt<reactionImages.length;attempt++){
+      const path=nextReaction();
+      if(!path)return;
+      const incoming=new Image();
+      incoming.alt=current.alt;
+      incoming.width=1000;incoming.height=563;
+      incoming.decoding='async';
+      try{
+        await new Promise((resolve,reject)=>{
+          const timeout=setTimeout(()=>{incoming.onload=incoming.onerror=null;reject(new Error('Image timeout'))},12000);
+          incoming.onload=()=>{clearTimeout(timeout);resolve()};
+          incoming.onerror=()=>{clearTimeout(timeout);reject(new Error('Image unavailable'))};
+          incoming.src=path;
+        });
+        if(incoming.decode)await incoming.decode();
+      }catch(error){pendingReactions.delete(path);unavailableReactions.add(path);continue}
+      if(!animate||reactionMotion.matches){current.replaceWith(incoming);pendingReactions.delete(path);return}
+      incoming.className='incoming';
+      incoming.alt=''; // The outgoing photo supplies the description during the fade.
+      incoming.setAttribute('aria-hidden','true');
+      frame.appendChild(incoming);
+      pendingReactions.delete(path);
+      await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+      incoming.classList.add('is-visible');
+      await new Promise(resolve=>setTimeout(resolve,2100));
+      incoming.alt=current.alt;incoming.removeAttribute('aria-hidden');
+      current.remove();incoming.className='';
+      return;
+    }
+  };
+  const reactionToggle=document.createElement('button');
+  reactionToggle.type='button';reactionToggle.className='slideshow-toggle';
+  reactionToggle.textContent='Pause photos';reactionToggle.setAttribute('aria-pressed','false');
+  reactionToggle.hidden=reactionMotion.matches;
+  reactionStack.appendChild(reactionToggle);
+  reactionToggle.addEventListener('click',()=>{
+    reactionPaused=!reactionPaused;
+    reactionToggle.textContent=reactionPaused?'Play photos':'Pause photos';
+    reactionToggle.setAttribute('aria-pressed',String(reactionPaused));
+  });
+  reactionMotion.addEventListener('change',()=>{reactionToggle.hidden=reactionMotion.matches});
+  new IntersectionObserver(entries=>{reactionInView=entries.some(entry=>entry.isIntersecting)}).observe(reactionStack);
+  // Recover an initial image failure even when animation is disabled.
+  reactionFrames.forEach(frame=>{
+    const img=frame.querySelector('img');
+    const recover=()=>{unavailableReactions.add(reactionPath(img));replaceReaction(frame,false)};
+    img.addEventListener('error',recover,{once:true});
+    if(img.complete&&!img.naturalWidth)recover();
+  });
+  // Only one row changes at a time: each row holds for roughly 15 seconds.
+  setInterval(async()=>{
+    if(reactionBusy||reactionPaused||reactionMotion.matches||document.hidden||!reactionInView)return;
+    reactionBusy=true;
+    try{await replaceReaction(reactionFrames[reactionIndex]);reactionIndex=(reactionIndex+1)%reactionFrames.length}
+    finally{reactionBusy=false}
+  },5000);
 
   const deathWhoImages=[...Array.from({length:12},(_,i)=>`assets/death-who-cutouts/barney${i+1}.png`),'assets/death-who-cutouts/Barney13.png','assets/death-who-cutouts/Barney14.png','assets/death-who-cutouts/barney15.png',...Array.from({length:15},(_,i)=>`assets/death-who-cutouts/David${i+1}.png`),...Array.from({length:11},(_,i)=>`assets/death-who-cutouts/Kate${i+1}.png`),...Array.from({length:12},(_,i)=>`assets/death-who-cutouts/Melody${i+1}.png`)];
   const allDeathSlots=[...document.querySelectorAll('.hero-card,.house-card,.secondary-death-card')];
