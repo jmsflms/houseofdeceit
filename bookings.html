@@ -94,7 +94,7 @@ const MAX_DATE='2027-07-01';
 const SOLD_OUT_START_DATES=new Set(['2026-11-20','2026-12-29']);
 const EXTRA_DECEMBER_DATES=new Set(['2026-12-27','2026-12-28']);
 function allowedStart(stay){const day=new Date(stay.startDate+'T12:00:00').getDay();return day===5||day===0||day===3||EXTRA_DECEMBER_DATES.has(stay.startDate)}
-function publicRate(stay){const day=new Date(stay.startDate+'T12:00:00').getDay();return {...stay,pricePerPerson:day===5?166:120}}
+function publicRate(stay){const day=new Date(stay.startDate+'T12:00:00').getDay();return {...stay,pricePerPerson:stay.startDate==='2026-12-18'?120:(day===5?166:120)}}
 let stays=[],selected=null,currentMonth=null;
 const $=id=>document.getElementById(id);
 function validEmail(v){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())}
