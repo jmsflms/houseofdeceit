@@ -1,0 +1,16 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>House of Deceit — Social Preview</title><meta name="robots" content="noindex,nofollow"><style>body{margin:0;background:#140e19;color:white;font-family:Arial,sans-serif;text-align:center;padding:32px 16px}main{max-width:900px;margin:auto}canvas{max-width:100%;height:auto;display:block;margin:24px auto;border:1px solid #594263}button{background:#e6c177;border:none;border-radius:6px;color:#221528;padding:18px 30px;font-size:18px;font-weight:800;cursor:pointer}.status{color:#e6c177}p{line-height:1.5}</style></head><body><main><h1>House of Deceit — WhatsApp Preview</h1><p>Uses the original event74 photograph. No AI-generated imagery.</p><canvas width="1200" height="630" id="preview"></canvas><button type="button" id="download" disabled>Preparing image…</button><p id="status" class="status"></p></main><script>
+const cvs=document.getElementById('preview'),ctx=cvs.getContext('2d'),btn=document.getElementById('download'),status=document.getElementById('status');
+const img=new Image();img.src='assets/event-photos/event74.jpeg';
+img.onload=()=>{
+const sw=img.naturalWidth,sh=img.naturalHeight,W=1200,H=630;
+const scale=Math.max(W/sw,H/sh),dw=sw*scale,dh=sh*scale;
+ctx.drawImage(img,(W-dw)/2,Math.min(0,(H-dh)*0.12),dw,dh);
+const overlay=ctx.createLinearGradient(0,0,0,H);overlay.addColorStop(0,'rgba(13,8,19,0.08)');overlay.addColorStop(.30,'rgba(13,8,19,0.20)');overlay.addColorStop(.62,'rgba(13,8,19,0.78)');overlay.addColorStop(1,'rgba(13,8,19,0.94)');ctx.fillStyle=overlay;ctx.fillRect(0,0,W,H);
+ctx.fillStyle='#fff';ctx.textBaseline='alphabetic';ctx.shadowColor='rgba(0,0,0,.7)';ctx.shadowBlur=6;
+ctx.font='bold 90px Georgia,serif';ctx.fillText('HOUSE OF DECEIT',48,420);
+ctx.font='34px Arial,sans-serif';ctx.fillText('A weekend-long Traitors-style party in a big house.',50,498);ctx.fillText('5-star reviews.',50,543);
+ctx.shadowBlur=0;btn.disabled=false;btn.textContent='Download JPG';status.textContent='1200 × 630 JPG — ready to download.';
+};
+img.onerror=()=>{status.textContent='The original photograph could not load.';btn.textContent='Image unavailable.'};
+btn.addEventListener('click',()=>{cvs.toBlob(blob=>{if(!blob){status.textContent='Download failed.';return}const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='house-of-deceit-whatsapp.jpg';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500)},'image/jpeg',0.85)});
+</script></body></html>
