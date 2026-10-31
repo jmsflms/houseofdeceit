@@ -241,7 +241,7 @@
     .mosaic{display:flex;flex-direction:column;gap:10px;width:100%;max-width:500px;margin-left:auto}
     .mosaic-frame{position:relative;aspect-ratio:16/9;overflow:hidden;border-radius:8px;background:#160e1b}
     .mosaic .mosaic-frame img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;border-radius:8px}
-    .mosaic .mosaic-incoming{opacity:0;transition:opacity 2.4s ease-in-out}
+    .mosaic .mosaic-incoming{opacity:0;transition:opacity 1.2s ease-in-out}
     .mosaic .mosaic-incoming.is-visible{opacity:1}
     @media(prefers-reduced-motion:reduce){.mosaic .mosaic-incoming{transition:none}}
     .bigline{font:900 clamp(2.6rem,6vw,5.8rem)/.95 Georgia,serif;margin:0}
@@ -508,7 +508,7 @@
         frame.append(incoming);
         await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
         incoming.classList.add('is-visible');
-        await new Promise(resolve=>setTimeout(resolve,2500));
+        await new Promise(resolve=>setTimeout(resolve,1300));
         incoming.alt=current.alt;
         incoming.removeAttribute('aria-hidden');
         current.remove();
@@ -519,9 +519,9 @@
     }
   }
   async function cycleReactions(){
-    try{await changeReaction()}finally{setTimeout(cycleReactions,6000)}
+    try{await changeReaction()}finally{setTimeout(cycleReactions,1700)}
   }
-  setTimeout(cycleReactions,6000);
+  setTimeout(cycleReactions,1700);
 
   const deathWhoImages=[...Array.from({length:12},(_,i)=>`assets/death-who-cutouts/barney${i+1}.png`),'assets/death-who-cutouts/Barney13.png','assets/death-who-cutouts/Barney14.png','assets/death-who-cutouts/barney15.png',...Array.from({length:15},(_,i)=>`assets/death-who-cutouts/David${i+1}.png`),...Array.from({length:11},(_,i)=>`assets/death-who-cutouts/Kate${i+1}.png`),...Array.from({length:12},(_,i)=>`assets/death-who-cutouts/Melody${i+1}.png`)];
   const allDeathSlots=[...document.querySelectorAll('.hero-card,.house-card,.secondary-death-card')];
