@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>House of Deceit — Countdown · 6 December</title>
+<meta name="description" content="One house. Two nights. All your friends. Your countdown has begun.">
+<link rel="canonical" href="https://www.houseofdeceit.com/countdown-dec6/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="House of Deceit">
+<meta property="og:title" content="House of Deceit — Countdown · 6 December">
+<meta property="og:description" content="One house. Two nights. All your friends. Your countdown has begun.">
+<meta property="og:url" content="https://www.houseofdeceit.com/countdown-dec6/">
+<meta property="og:image" content="https://www.houseofdeceit.com/assets/logos/countdown-eyes-share.jpg">
+<meta property="og:image:secure_url" content="https://www.houseofdeceit.com/assets/logos/countdown-eyes-share.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="House of Deceit eyes artwork">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="House of Deceit — Countdown · 6 December">
+<meta name="twitter:description" content="One house. Two nights. All your friends. Your countdown has begun.">
+<meta name="twitter:image" content="https://www.houseofdeceit.com/assets/logos/countdown-eyes-share.jpg">
+<link rel="icon" type="image/png" href="../assets/logos/eyes-icon.png">
+
+<style>
+  html, body {
+    margin:0;
+    height:100%;
+    background:#000;
+  }
+
+  /* Compact animated header and countdown */
+  .page{
+    min-height:100%;
+    box-sizing:border-box;
+    padding:0 16px 80px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+
+  #logo {
+    width: min(440px, 74vw);
+    height: auto;
+    margin-top: 28px;
+    user-select:none;
+    -webkit-user-drag:none;
+  }
+
+  .timerBlock{
+    margin-top: clamp(40px, 8vh, 90px);         /* pushes the countdown down */
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+  }
+
+  #label {
+    color:#ff2a2a;
+    font-family: monospace;
+    font-size: clamp(24px, 4vw, 60px);
+    margin: 0 0 18px 0;
+    text-shadow: 0 0 20px rgba(255,0,0,0.4);
+    user-select:none;
+    text-align:center;
+  }
+
+  #timer {
+    color:#ff2a2a;
+    font-family: monospace;
+    font-size: clamp(28px, 8.5vw, 120px);
+    font-weight: bold;
+    letter-spacing: 0.025em;
+    white-space:nowrap;
+    text-shadow: 0 0 30px rgba(255,0,0,0.5);
+    user-select:none;
+    text-align:center;
+  }
+
+  #cta {
+    display:inline-block;
+    margin:36px 0 0;
+    padding:16px 24px;
+    max-width:100%;
+    box-sizing:border-box;
+    background:#c91f2c;
+    color:#fff;
+    border-radius:7px;
+    font:700 16px/1.4 Arial,sans-serif;
+    text-decoration:none;
+    text-align:center;
+  }
+  #cta[hidden]{display:none}
+  #cta:hover{background:#e22938}
+  #cta:focus-visible{outline:3px solid #fff;outline-offset:4px}
+
+  /* Discreet sound toggle */
+  #soundToggle {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    background: rgba(0,0,0,0.55);
+    border: 1px solid rgba(255,42,42,0.35);
+    color: #ff2a2a;
+    font-family: monospace;
+    font-size: 14px;
+    padding: 8px 10px;
+    border-radius: 12px;
+    cursor: pointer;
+    user-select:none;
+  }
+  #soundToggle.on {
+    background: rgba(255,42,42,0.12);
+    border-color: rgba(255,42,42,0.7);
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <img id="logo" src="../assets/logos/eyesslim.gif" alt="House of Deceit" />
+
+  <div class="timerBlock">
+    <div id="label"></div>
+    <div id="timer">00:00:00</div>
+  </div>
+
+  <a id="cta" hidden target="_blank" rel="noopener noreferrer"></a>
+</div>
+
+<button id="soundToggle" type="button">Sound: Off</button>
+
+<script type="module">
+// This group's countdown is independent of the other booking countdowns.
+const COUNTDOWN_ID = "DEC6";
+const DEFAULTS = {
+  DEC6:{end_time:"2026-12-06T20:00:00+00:00"}
+};
+const defaultSettings = {
+  message:"The Murders Begin",
+  ctaText:"Follow Insta for Strategies and More",
+  ctaUrl:"https://www.instagram.com/house.of.deceit/"
+};
+function decodeSettings(label){
+  try {
+    const parsed=JSON.parse(label);
+    if(parsed && parsed.version===1) return {...defaultSettings,...parsed};
+  } catch {}
+  return {...defaultSettings,message:label ?? defaultSettings.message};
+}
+function safeUrl(value){
+  try { const url=new URL(value); return ["https:","http:"].includes(url.protocol)?url.href:""; }
+  catch { return ""; }
+}
+
+const timer = document.getElementById("timer")
+const labelEl = document.getElementById("label")
+const soundToggle = document.getElementById("soundToggle")
+
+let endTime = DEFAULTS[COUNTDOWN_ID]?.end_time || null
+let interval = null
+
+function pad(n){ return String(n).padStart(2,"0") }
+
+function format(ms){
+  ms = Math.max(0, ms)
+  const total = Math.floor(ms/1000)
+
+  const s = total % 60
+  const m = Math.floor(total/60) % 60
+  const totalHours = Math.floor(total/3600)
+
+  const d = Math.floor(totalHours/24)
+  const h = totalHours % 24
+
+  if (d > 0) return `${d}d ${pad(h)}:${pad(m)}:${pad(s)}`
+  return `${pad(totalHours)}:${pad(m)}:${pad(s)}`
+}
+
+/* ---- Beep (optional, off by default) ---- */
+let audioCtx = null
+let soundEnabled = false
+let lastWholeSeconds = null
+
+function ensureAudio(){
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)()
+}
+
+function pip(){
+  if (!soundEnabled) return
+  ensureAudio()
+  if (audioCtx.state !== "running") return
+
+  const o = audioCtx.createOscillator()
+  const g = audioCtx.createGain()
+
+  o.type = "square"
+  o.frequency.value = 880
+  g.gain.value = 0.05
+
+  o.connect(g)
+  g.connect(audioCtx.destination)
+
+  const t = audioCtx.currentTime
+  g.gain.setValueAtTime(0.0001, t)
+  g.gain.exponentialRampToValueAtTime(0.05, t + 0.005)
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.06)
+
+  o.start(t)
+  o.stop(t + 0.07)
+}
+
+soundToggle.addEventListener("click", async () => {
+  if (!soundEnabled) {
+    ensureAudio()
+    await audioCtx.resume()
+    soundEnabled = true
+    soundToggle.classList.add("on")
+    soundToggle.textContent = "Sound: On"
+    pip()
+  } else {
+    soundEnabled = false
+    soundToggle.classList.remove("on")
+    soundToggle.textContent = "Sound: Off"
+  }
+})
+
+function start(){
+  if(endTime) timer.textContent=format(new Date(endTime).getTime()-Date.now())
+  if(interval) clearInterval(interval)
+
+  interval = setInterval(()=>{
+    if(!endTime) return
+
+    const diffMs = new Date(endTime).getTime() - Date.now()
+    timer.textContent = format(diffMs)
+
+    const whole = Math.max(0, Math.floor(diffMs / 1000))
+    if (lastWholeSeconds === null) lastWholeSeconds = whole
+    if (whole !== lastWholeSeconds) {
+      lastWholeSeconds = whole
+      if (whole > 0) pip()
+    }
+  }, 250)
+}
+
+
+function applyData(data){
+  let documentSettings;
+  try{documentSettings=JSON.parse(data.label)}catch{}
+  if(documentSettings?.version===2){
+    data=COUNTDOWN_ID==="main"
+      ? {...data,label:documentSettings.message}
+      : (documentSettings.groups?.[COUNTDOWN_ID] || {...DEFAULTS[COUNTDOWN_ID],label:JSON.stringify({version:1,...defaultSettings})});
+  }else if(COUNTDOWN_ID!=="main"){
+    data={...DEFAULTS[COUNTDOWN_ID],label:JSON.stringify({version:1,...defaultSettings})};
+  }
+  const settings=decodeSettings(data.label);
+  endTime=data.end_time;
+  labelEl.textContent=settings.message;
+  const cta=document.getElementById("cta");
+  const url=safeUrl(settings.ctaUrl);
+  cta.hidden=COUNTDOWN_ID==="main" || !settings.ctaText || !url;
+  cta.textContent=settings.ctaText;
+  if(url) cta.href=url;
+  lastWholeSeconds=null;
+  start();
+}
+if(DEFAULTS[COUNTDOWN_ID]) applyData({...DEFAULTS[COUNTDOWN_ID],label:JSON.stringify({version:1,...defaultSettings})});
+
+</script>
+
+</body>
+</html>
