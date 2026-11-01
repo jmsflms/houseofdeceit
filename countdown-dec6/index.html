@@ -132,10 +132,22 @@
 <button id="soundToggle" type="button">Sound: Off</button>
 
 <script type="module">
-// This group's countdown is independent of the other booking countdowns.
-const COUNTDOWN_ID = "DEC6";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
+
+const supabase = createClient(
+  "https://hhyfixoxwxmzncosmcqo.supabase.co",
+  "sb_publishable_KWvHkZqW2aAipujklitrdg_C7bSBFce"
+)
+
+
+// Each code has an independent row; the original countdown keeps "main".
+const routeCode = location.pathname.split("/").filter(Boolean)[0];
+const COUNTDOWN_ID = ({countdownH:"H",countdownO:"O",countdownD:"D","countdown-dec6":"DEC6"})[routeCode] || "main";
 const DEFAULTS = {
-  DEC6:{end_time:"2026-12-06T20:00:00+00:00"}
+  DEC6:{end_time:"2026-12-06T20:00:00+00:00"},
+  H:{end_time:"2026-10-09T21:00:00+01:00"},
+  O:{end_time:"2026-12-11T21:00:00+00:00"},
+  D:{end_time:"2027-02-19T21:00:00+00:00"}
 };
 const defaultSettings = {
   message:"The Murders Begin",
@@ -269,6 +281,29 @@ function applyData(data){
 }
 if(DEFAULTS[COUNTDOWN_ID]) applyData({...DEFAULTS[COUNTDOWN_ID],label:JSON.stringify({version:1,...defaultSettings})});
 
+async function load(){
+  const { data } = await supabase
+    .from("countdowns")
+    .select("*")
+    .eq("id","main")
+    .maybeSingle()
+
+  if(data) applyData(data)
+}
+
+await load()
+setInterval(load, 2000);
+
+supabase
+  .channel(`countdown-live-${COUNTDOWN_ID}`)
+  .on(
+    "postgres_changes",
+    { event:"*", schema:"public", table:"countdowns", filter:"id=eq.main" },
+    payload => {
+      if(payload.new?.end_time) applyData(payload.new)
+    }
+  )
+  .subscribe()
 </script>
 
 </body>
