@@ -489,39 +489,89 @@
     img.src=path;
   });
   let reactionIndex=0;
-  async function changeReaction(){
-    if(document.hidden||reducedMotion.matches)return;
-    const frame=reactionFrames[reactionIndex];
-    if(!frame)return;
-    const bounds=frame.parentElement.getBoundingClientRect();
-    if(bounds.bottom<0||bounds.top>window.innerHeight)return;
-    const used=new Set(reactionFrames.map(item=>reactionPath(item.firstElementChild)));
+  let nextReaction=null;
+  let reactionTimer=null;
+  let reactionBusy=false;
+  let reactionsVisible=false;
+  function prepareReaction(){
+    if(nextReaction||reducedMotion.matches)return;
+    const used=new Set(reactionFrames.flatMap(frame=>[...frame.children].map(reactionPath)));
     const choices=reactionImages.filter(path=>!used.has(path)&&!failedReactions.has(path));
-    // Keep the current photo visible if any replacement fails to load.
-    while(choices.length){
-      const choice=choices.splice(Math.floor(Math.random()*choices.length),1)[0];
-      try{
-        const incoming=await loadReaction(choice);
-        if(document.hidden||reducedMotion.matches)return;
-        const current=frame.firstElementChild;
-        incoming.className='mosaic-incoming';
-        frame.append(incoming);
-        await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
-        incoming.classList.add('is-visible');
-        await new Promise(resolve=>setTimeout(resolve,1300));
-        incoming.alt=current.alt;
-        incoming.removeAttribute('aria-hidden');
-        current.remove();
-        incoming.className='';
-        reactionIndex=(reactionIndex+1)%reactionFrames.length;
-        return;
-      }catch(error){failedReactions.add(choice)}
-    }
+    if(!choices.length)return;
+    const path=choices[Math.floor(Math.random()*choices.length)];
+    nextReaction={path,promise:loadReaction(path).catch(()=>{failedReactions.add(path);return null})};
+  }
+  async function changeReaction(){
+    if(document.hidden||reducedMotion.matches||!reactionsVisible)return;
+    const visibleFrames=reactionFrames.filter(frame=>{
+      const bounds=frame.getBoundingClientRect();
+      return bounds.bottom>0&&bounds.top<window.innerHeight;
+    });
+    const frame=visibleFrames.find(item=>reactionFrames.indexOf(item)>=reactionIndex)||visibleFrames[0];
+    if(!frame)return;
+    prepareReaction();
+    if(!nextReaction)return;
+    const pending=nextReaction;
+    const incoming=await pending.promise;
+    nextReaction=null;
+    if(!incoming){prepareReaction();return}
+    if(document.hidden||reducedMotion.matches||!reactionsVisible){prepareReaction();return}
+    const current=frame.firstElementChild;
+    incoming.className='mosaic-incoming';
+    frame.append(incoming);
+    // Load the next photo during this fade, before it is needed.
+    prepareReaction();
+    await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+    incoming.classList.add('is-visible');
+    await new Promise(resolve=>setTimeout(resolve,1300));
+    incoming.alt=current.alt;
+    incoming.removeAttribute('aria-hidden');
+    current.remove();
+    incoming.className='';
+    reactionIndex=(reactionFrames.indexOf(frame)+1)%reactionFrames.length;
   }
   async function cycleReactions(){
-    try{await changeReaction()}finally{setTimeout(cycleReactions,1700)}
+    reactionTimer=null;
+    if(reactionBusy||!reactionsVisible||document.hidden||reducedMotion.matches)return;
+    reactionBusy=true;
+    try{await changeReaction()}finally{
+      reactionBusy=false;
+      if(reactionsVisible&&!document.hidden&&!reducedMotion.matches){
+        reactionTimer=setTimeout(cycleReactions,1100);
+      }
+    }
   }
-  setTimeout(cycleReactions,1700);
+  function resumeReactions(){
+    clearTimeout(reactionTimer);
+    reactionTimer=null;
+    if(reactionsVisible&&!document.hidden&&!reducedMotion.matches&&!reactionBusy){
+      prepareReaction();
+      reactionTimer=setTimeout(cycleReactions,250);
+    }
+  }
+  if(reactionFrames.length){
+    // Warm the next image before the gallery scrolls into view.
+    const warmObserver=new IntersectionObserver(entries=>{
+      if(entries.some(entry=>entry.isIntersecting)){
+        prepareReaction();
+        warmObserver.disconnect();
+      }
+    },{rootMargin:'600px'});
+    warmObserver.observe(reactionFrames[0].parentElement);
+    const visibleReactions=new Set();
+    const reactionObserver=new IntersectionObserver(entries=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting)visibleReactions.add(entry.target);
+        else visibleReactions.delete(entry.target);
+      });
+      const wasVisible=reactionsVisible;
+      reactionsVisible=visibleReactions.size>0;
+      if(reactionsVisible!==wasVisible)resumeReactions();
+    },{threshold:0.1});
+    reactionFrames.forEach(frame=>reactionObserver.observe(frame));
+    document.addEventListener('visibilitychange',resumeReactions);
+    reducedMotion.addEventListener('change',resumeReactions);
+  }
 
   const deathWhoImages=[...Array.from({length:12},(_,i)=>`assets/death-who-cutouts/barney${i+1}.png`),'assets/death-who-cutouts/Barney13.png','assets/death-who-cutouts/Barney14.png','assets/death-who-cutouts/barney15.png',...Array.from({length:15},(_,i)=>`assets/death-who-cutouts/David${i+1}.png`),...Array.from({length:11},(_,i)=>`assets/death-who-cutouts/Kate${i+1}.png`),...Array.from({length:12},(_,i)=>`assets/death-who-cutouts/Melody${i+1}.png`)];
   const allDeathSlots=[...document.querySelectorAll('.hero-card,.house-card,.secondary-death-card')];
