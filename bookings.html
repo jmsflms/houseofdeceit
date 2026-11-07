@@ -91,7 +91,7 @@ const MAX_MONTH=new Date(2027,6,1);
 const MIN_DATE=[MIN_MONTH.getFullYear(),String(MIN_MONTH.getMonth()+1).padStart(2,'0'),'01'].join('-');
 const MAX_DATE='2027-08-01';
 // Confirmed sold-out start dates, even if the availability feed has not caught up.
-const SOLD_OUT_START_DATES=new Set(['2026-11-20','2026-12-29','2027-03-19']);
+const SOLD_OUT_START_DATES=new Set(['2026-11-20','2026-12-29','2027-01-15','2027-03-19']);
 const EXTRA_DECEMBER_DATES=new Set(['2026-12-27','2026-12-28']);
 function allowedStart(stay){const day=new Date(stay.startDate+'T12:00:00').getDay();if(stay.startDate.startsWith('2027-07-'))return day===0||day===1;return day===5||day===0||day===3||EXTRA_DECEMBER_DATES.has(stay.startDate)}
 function publicRate(stay){const day=new Date(stay.startDate+'T12:00:00').getDay();return {...stay,pricePerPerson:stay.startDate==='2026-12-18'?120:(day===5?166:120)}}
