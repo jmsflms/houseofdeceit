@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>House of Deceit — Countdown · 19 July 2027</title>
+<meta name="description" content="Skinners Does Traitors — 19 July 2027. Pay your £120 share and complete the guest steps.">
+<link rel="canonical" href="https://www.houseofdeceit.com/countdown-skinners/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="House of Deceit">
+<meta property="og:title" content="SKINNERS · House of Deceit · 19 July 2027">
+<meta property="og:description" content="Your countdown, £120 payment link, questionnaire and guest information.">
+<meta property="og:url" content="https://www.houseofdeceit.com/countdown-skinners/">
+<meta property="og:image" content="https://www.houseofdeceit.com/assets/logos/countdown-eyes-share.jpg">
+<meta property="og:image:secure_url" content="https://www.houseofdeceit.com/assets/logos/countdown-eyes-share.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="House of Deceit eyes artwork">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SKINNERS · House of Deceit · 19 July 2027">
+<meta name="twitter:description" content="Your countdown, £120 payment link, questionnaire and guest information.">
+<meta name="twitter:image" content="https://www.houseofdeceit.com/assets/logos/countdown-eyes-share.jpg">
+<link rel="icon" type="image/png" href="../assets/logos/eyes-icon.png">
+
+<style>
+  html, body {
+    margin:0;
+    height:100%;
+    background:#000;
+  }
+
+  /* Compact animated header and countdown */
+  .page{
+    min-height:100%;
+    box-sizing:border-box;
+    padding:0 16px 64px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+
+  #logo {
+    width: min(300px, 62vw);
+    height: auto;
+    margin-top: 14px;
+    user-select:none;
+    -webkit-user-drag:none;
+  }
+
+  .timerBlock{
+    margin-top: 12px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+  }
+
+  #label {
+    color:#ff2a2a;
+    font-family: monospace;
+    font-size: clamp(16px, 3.5vw, 26px);
+    margin: 0 0 6px 0;
+    text-shadow: 0 0 20px rgba(255,0,0,0.4);
+    user-select:none;
+    text-align:center;
+  }
+
+  #timer {
+    color:#ff2a2a;
+    font-family: monospace;
+    font-size: clamp(27px, 7vw, 56px);
+    font-weight: bold;
+    letter-spacing: 0.025em;
+    white-space:nowrap;
+    text-shadow: 0 0 30px rgba(255,0,0,0.5);
+    user-select:none;
+    text-align:center;
+  }
+
+  #cta {
+    display:inline-block;
+    margin:36px 0 0;
+    padding:16px 24px;
+    max-width:100%;
+    box-sizing:border-box;
+    background:#c91f2c;
+    color:#fff;
+    border-radius:7px;
+    font:700 16px/1.4 Arial,sans-serif;
+    text-decoration:none;
+    text-align:center;
+  }
+  #cta[hidden]{display:none}
+  #cta:hover{background:#e22938}
+  #cta:focus-visible{outline:3px solid #fff;outline-offset:4px}
+
+
+  .details {width:min(620px,100%);margin:22px auto 0;color:#f5f1ed;font:16px/1.5 Arial,Helvetica,sans-serif;}
+  .details h1 {font-size:clamp(24px,5vw,34px);line-height:1.12;margin:0 0 12px;text-align:center;color:#fff;}
+  .intro {text-align:center;margin:0 0 18px;}
+  .intro p {margin:5px 0;}
+  .intro strong {color:#fff;}
+  .hint {text-align:center;color:#f2c7c7;margin:8px 0 18px;font-size:14px;}
+  .guest-card {background:#141414;border:1px solid #493032;border-radius:10px;padding:17px 18px;margin:12px 0;}
+  .guest-card.payment {border:2px solid #ee343f;background:#1b0d0f;}
+  .guest-card h2 {color:#fff;font-size:18px;margin:0 0 8px;line-height:1.3;}
+  .guest-card p {margin:0 0 12px;color:#e8dddd;}
+  .guest-card small {color:#e9c8c8;font-size:13px;}
+  .action {display:block;background:#c91f2c;color:#fff;text-align:center;text-decoration:none;font-weight:800;padding:13px 15px;border-radius:6px;letter-spacing:.015em;}
+  .action:hover {background:#e22938;}
+  .action:focus-visible {outline:3px solid #fff;outline-offset:3px;}
+  .secondary {background:#272727;border:1px solid #775659;}
+  .secondary:hover {background:#393030;}
+  .heading-link {color:#ffd83d;text-decoration:underline;text-underline-offset:4px;}
+  .heading-link:hover,.address-link:hover {text-decoration:underline;}
+  .address-link {color:inherit;text-underline-offset:3px;}
+  .hint {font-size:clamp(24px,5vw,34px);line-height:1.12;font-weight:700;color:#fff;margin:16px 0 18px;}
+  .footnote {color:#bea9a9;font-size:13px;text-align:center;margin:20px 0;}
+  /* Discreet sound toggle */
+  #soundToggle {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    background: rgba(0,0,0,0.55);
+    border: 1px solid rgba(255,42,42,0.35);
+    color: #ff2a2a;
+    font-family: monospace;
+    font-size: 14px;
+    padding: 8px 10px;
+    border-radius: 12px;
+    cursor: pointer;
+    user-select:none;
+  }
+  #soundToggle.on {
+    background: rgba(255,42,42,0.12);
+    border-color: rgba(255,42,42,0.7);
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <img id="logo" src="../assets/logos/eyesslim.gif" alt="House of Deceit" />
+
+  <div class="timerBlock">
+    <div id="label"></div>
+    <div id="timer">00:00:00</div>
+  </div>
+
+  <a id="cta" hidden target="_blank" rel="noopener noreferrer"></a>
+
+  <main class="details">
+    <h1><a class="heading-link" href="https://www.houseofdeceit.com/">HOUSE OF DECEIT</a></h1>
+    <div class="intro">
+      <p><strong>Monday 19 July 2027</strong></p>
+      <p>Check-in from <strong>4pm</strong></p>
+      <p><a class="address-link" href="https://www.google.com/maps/search/?api=1&amp;query=59+Northwood+Road%2C+Whitstable%2C+CT5+2HA" target="_blank" rel="noopener noreferrer">59 Northwood Road, Whitstable, CT5 2HA</a></p>
+    </div>
+    <p class="hint">FORWARD TO YOUR GUESTS</p>
+
+    <section class="guest-card payment">
+      <h2>1. DEAR GUEST PAY YOUR £120 SHARE</h2>
+      <p>(On the payment page, change the amount to <strong>£120</strong>.)</p>
+      <a class="action" href="https://book.stripe.com/8x228rgCq9NFaw41dm2Nq00" target="_blank" rel="noopener noreferrer">PAY £120</a>
+    </section>
+
+    <section class="guest-card">
+      <h2>2. COMPLETE YOUR QUESTIONNAIRE</h2>
+      <p>Use the group / booking reference <strong>SKINNERS</strong>.</p>
+      <a class="action" href="https://docs.google.com/forms/d/e/1FAIpQLSeS73XzIgoAf6yJ2m9AXaeNKXeWR2uvnqTZieXvJrQzKQ80mQ/viewform" target="_blank" rel="noopener noreferrer">QUESTIONNAIRE</a>
+    </section>
+
+    <section class="guest-card">
+      <h2>3. READ THE RULES <small>(optional)</small></h2>
+      <a class="action secondary" href="https://www.houseofdeceit.com/rules.html" target="_blank" rel="noopener noreferrer">READ RULES</a>
+    </section>
+
+    <section class="guest-card">
+      <h2>4. INFO ABOUT YOUR STAY</h2>
+      <p>Arrival, parking, Wi-Fi, bedrooms, the house, hot tub, local information and checkout.</p>
+      <a class="action secondary" href="https://www.houseofdeceit.com/stay.html" target="_blank" rel="noopener noreferrer">INFO ABOUT YOUR STAY</a>
+    </section>
+
+    <section class="guest-card">
+      <h2>5. FOLLOW HOUSE OF DECEIT ON INSTAGRAM</h2>
+      <a class="action secondary" href="https://www.instagram.com/house.of.deceit/" target="_blank" rel="noopener noreferrer">FOLLOW ON INSTAGRAM</a>
+    </section>
+    <p class="footnote">House of Deceit · Whitstable, Kent</p>
+  </main>
+</div>
+
+<button id="soundToggle" type="button">Sound: Off</button>
+
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
+
+const supabase = createClient(
+  "https://hhyfixoxwxmzncosmcqo.supabase.co",
+  "sb_publishable_KWvHkZqW2aAipujklitrdg_C7bSBFce"
+)
+
+
+// Each code has an independent row; the original countdown keeps "main".
+const routeCode = location.pathname.split("/").filter(Boolean)[0];
+const COUNTDOWN_ID = ({countdownH:"H",countdownO:"O",countdownD:"D","countdown-dec6":"DEC6","countdown-skinners":"SKINNERS"})[routeCode] || "main";
+const DEFAULTS = {
+  DEC6:{end_time:"2026-12-06T20:00:00+00:00"},
+  SKINNERS:{end_time:"2027-07-19T20:00:00+01:00"},
+  H:{end_time:"2026-10-09T21:00:00+01:00"},
+  O:{end_time:"2026-12-11T21:00:00+00:00"},
+  D:{end_time:"2027-02-19T21:00:00+00:00"}
+};
+const defaultSettings = {
+  message:'You are invited to "SKINNERS DOES TRAITORS"',
+  ctaText:"Follow Insta for Strategies and More",
+  ctaUrl:"https://www.instagram.com/house.of.deceit/"
+};
+function decodeSettings(label){
+  try {
+    const parsed=JSON.parse(label);
+    if(parsed && parsed.version===1) return {...defaultSettings,...parsed};
+  } catch {}
+  return {...defaultSettings,message:label ?? defaultSettings.message};
+}
+function safeUrl(value){
+  try { const url=new URL(value); return ["https:","http:"].includes(url.protocol)?url.href:""; }
+  catch { return ""; }
+}
+
+const timer = document.getElementById("timer")
+const labelEl = document.getElementById("label")
+const soundToggle = document.getElementById("soundToggle")
+
+let endTime = DEFAULTS[COUNTDOWN_ID]?.end_time || null
+let interval = null
+
+function pad(n){ return String(n).padStart(2,"0") }
+
+function format(ms){
+  ms = Math.max(0, ms)
+  const total = Math.floor(ms/1000)
+
+  const s = total % 60
+  const m = Math.floor(total/60) % 60
+  const totalHours = Math.floor(total/3600)
+
+  const d = Math.floor(totalHours/24)
+  const h = totalHours % 24
+
+  if (d > 0) return `${d}d ${pad(h)}:${pad(m)}:${pad(s)}`
+  return `${pad(totalHours)}:${pad(m)}:${pad(s)}`
+}
+
+/* ---- Beep (optional, off by default) ---- */
+let audioCtx = null
+let soundEnabled = false
+let lastWholeSeconds = null
+
+function ensureAudio(){
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)()
+}
+
+function pip(){
+  if (!soundEnabled) return
+  ensureAudio()
+  if (audioCtx.state !== "running") return
+
+  const o = audioCtx.createOscillator()
+  const g = audioCtx.createGain()
+
+  o.type = "square"
+  o.frequency.value = 880
+  g.gain.value = 0.05
+
+  o.connect(g)
+  g.connect(audioCtx.destination)
+
+  const t = audioCtx.currentTime
+  g.gain.setValueAtTime(0.0001, t)
+  g.gain.exponentialRampToValueAtTime(0.05, t + 0.005)
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.06)
+
+  o.start(t)
+  o.stop(t + 0.07)
+}
+
+soundToggle.addEventListener("click", async () => {
+  if (!soundEnabled) {
+    ensureAudio()
+    await audioCtx.resume()
+    soundEnabled = true
+    soundToggle.classList.add("on")
+    soundToggle.textContent = "Sound: On"
+    pip()
+  } else {
+    soundEnabled = false
+    soundToggle.classList.remove("on")
+    soundToggle.textContent = "Sound: Off"
+  }
+})
+
+function start(){
+  if(endTime) timer.textContent=format(new Date(endTime).getTime()-Date.now())
+  if(interval) clearInterval(interval)
+
+  interval = setInterval(()=>{
+    if(!endTime) return
+
+    const diffMs = new Date(endTime).getTime() - Date.now()
+    timer.textContent = format(diffMs)
+
+    const whole = Math.max(0, Math.floor(diffMs / 1000))
+    if (lastWholeSeconds === null) lastWholeSeconds = whole
+    if (whole !== lastWholeSeconds) {
+      lastWholeSeconds = whole
+      if (whole > 0) pip()
+    }
+  }, 250)
+}
+
+
+function applyData(data){
+  let documentSettings;
+  try{documentSettings=JSON.parse(data.label)}catch{}
+  if(documentSettings?.version===2){
+    data=COUNTDOWN_ID==="main"
+      ? {...data,label:documentSettings.message}
+      : (documentSettings.groups?.[COUNTDOWN_ID] || {...DEFAULTS[COUNTDOWN_ID],label:JSON.stringify({version:1,...defaultSettings})});
+  }else if(COUNTDOWN_ID!=="main"){
+    data={...DEFAULTS[COUNTDOWN_ID],label:JSON.stringify({version:1,...defaultSettings})};
+  }
+  const settings=decodeSettings(data.label);
+  endTime=data.end_time;
+  labelEl.textContent=settings.message;
+  const cta=document.getElementById("cta");
+  const url=safeUrl(settings.ctaUrl);
+  cta.hidden=true; // This event page uses the guest action buttons below.
+  cta.textContent=settings.ctaText;
+  if(url) cta.href=url;
+  lastWholeSeconds=null;
+  start();
+}
+if(DEFAULTS[COUNTDOWN_ID]) applyData({...DEFAULTS[COUNTDOWN_ID],label:JSON.stringify({version:1,...defaultSettings})});
+
+async function load(){
+  const { data } = await supabase
+    .from("countdowns")
+    .select("*")
+    .eq("id","main")
+    .maybeSingle()
+
+  if(data) applyData(data)
+}
+
+await load()
+setInterval(load, 2000);
+
+supabase
+  .channel(`countdown-live-${COUNTDOWN_ID}`)
+  .on(
+    "postgres_changes",
+    { event:"*", schema:"public", table:"countdowns", filter:"id=eq.main" },
+    payload => {
+      if(payload.new?.end_time) applyData(payload.new)
+    }
+  )
+  .subscribe()
+</script>
+
+</body>
+</html>
